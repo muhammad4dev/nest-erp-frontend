@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "تطبيق المؤسسة"
+    "title": "تطبيق المؤسسة",
+    "description": "تطبيق مؤسسي حديث"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -8,18 +9,86 @@
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
     "signIn": "دخول",
-    "welcomeBack": "مرحباً بعودتك"
+    "signUp": "إنشاء حساب",
+    "welcomeBack": "مرحباً بعودتك",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "rememberMe": "تذكرني",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور"
   },
   "nav": {
     "dashboard": "لوحة القيادة",
     "admin": "المدير",
-    "users": "المستخدمين"
+    "users": "المستخدمين",
+    "settings": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "home": "الرئيسية",
+    "reports": "التقارير",
+    "analytics": "التحليلات"
   },
   "common": {
     "loading": "جاري التحميل...",
     "error": "حدث خطأ",
     "accessDenied": "تم رفض الوصول",
-    "goBack": "العودة"
+    "goBack": "العودة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "search": "بحث",
+    "filter": "تصفية",
+    "clear": "مسح",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "submit": "إرسال",
+    "reset": "إعادة تعيين",
+    "yes": "نعم",
+    "no": "لا",
+    "ok": "موافق",
+    "next": "التالي",
+    "previous": "السابق",
+    "back": "رجوع",
+    "continue": "متابعة",
+    "done": "تم",
+    "changeLanguage": "تغيير اللغة",
+    "changeTheme": "تغيير المظهر",
+    "lightMode": "الوضع الفاتح",
+    "darkMode": "الوضع الداكن",
+    "noData": "لا توجد بيانات",
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "all": "الكل",
+    "none": "لا شيء",
+    "selected": "محدد",
+    "actions": "إجراءات",
+    "status": "الحالة",
+    "success": "نجاح",
+    "warning": "تحذير",
+    "info": "معلومات"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "email": "يرجى إدخال بريد إلكتروني صالح",
+    "minLength": "يجب أن يكون على الأقل {{min}} أحرف",
+    "maxLength": "يجب ألا يتجاوز {{max}} أحرف",
+    "passwordMatch": "كلمات المرور يجب أن تتطابق",
+    "invalidFormat": "تنسيق غير صالح",
+    "invalidNumber": "يرجى إدخال رقم صالح",
+    "invalidDate": "يرجى إدخال تاريخ صالح"
+  },
+  "date": {
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "tomorrow": "غداً",
+    "thisWeek": "هذا الأسبوع",
+    "lastWeek": "الأسبوع الماضي",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي",
+    "thisYear": "هذا العام"
   },
   "forbidden": {
     "title": "تم رفض الوصول",
@@ -34,13 +103,30 @@
   "pwa": {
     "installMessage": "ثبّت هذا التطبيق للحصول على تجربة أفضل!",
     "install": "تثبيت",
-    "dismiss": "إغلاق"
+    "dismiss": "إغلاق",
+    "updateAvailable": "يتوفر إصدار جديد!",
+    "updateNow": "التحديث الآن"
   },
   "notifications": {
     "title": "الإشعارات",
     "recent": "الأخيرة",
     "markAllRead": "تحديد الكل كمقروء",
     "clearAll": "مسح الكل",
-    "empty": "ليس لديك إشعارات"
+    "empty": "ليس لديك إشعارات",
+    "newNotification": "إشعار جديد"
+  },
+  "table": {
+    "rowsPerPage": "الصفوف لكل صفحة",
+    "of": "من",
+    "noResults": "لا توجد نتائج",
+    "loading": "جاري تحميل البيانات...",
+    "sortAsc": "ترتيب تصاعدي",
+    "sortDesc": "ترتيب تنازلي"
+  },
+  "dialog": {
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
+    "confirmDeleteTitle": "تأكيد الحذف",
+    "unsavedChanges": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة؟",
+    "unsavedChangesTitle": "تغييرات غير محفوظة"
   }
 }
