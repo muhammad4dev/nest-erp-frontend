@@ -1,48 +1,74 @@
-import {
-  ThemeProvider as MuiThemeProvider,
-  createTheme,
-  CssBaseline,
-} from "@mui/material";
-import React, { useLayoutEffect } from "react";
+import type { EmotionCache } from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
+import { ThemeProvider as MuiThemeProvider, CssBaseline } from "@mui/material";
+import React, { useLayoutEffect, useMemo } from "react";
 
+import { createAppTheme, createEmotionCache } from "@/lib/theme";
+import { useResolvedTheme } from "@/shared/hooks/useSystemTheme";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const { direction, themeMode } = usePreferencesStore();
+interface ThemeProviderProps {
+  children: React.ReactNode;
+}
 
+// Module-level cache manager using closure - outside React's render cycle
+// Creates fresh cache on each direction change with incrementing keys
+const createCacheManager = () => {
+  let keyCounter = 0;
+
+  return {
+    refreshCache: (
+      direction: "rtl" | "ltr"
+    ): { cache: EmotionCache; key: number } => ({
+      cache: createEmotionCache(direction),
+      key: keyCounter++,
+    }),
+  };
+};
+
+const cacheManager = createCacheManager();
+
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+  const { direction, themeMode, locale } = usePreferencesStore();
+
+  // Resolve "system" theme mode to actual "light" or "dark"
+  // This hook reactively listens to OS color scheme changes
+  const resolvedThemeMode = useResolvedTheme(themeMode);
+
+  // Get cache for current direction - refreshes on direction change
+  const { cache, key } = useMemo(
+    () => cacheManager.refreshCache(direction),
+    [direction]
+  );
+
+  // Update document direction and attributes
   useLayoutEffect(() => {
     document.dir = direction;
-  }, [direction]);
+    document.documentElement.setAttribute("dir", direction);
+    document.documentElement.setAttribute("lang", locale);
 
-  const theme = React.useMemo(
+    // Add data-theme attribute for CSS selectors
+    document.documentElement.setAttribute("data-theme", resolvedThemeMode);
+  }, [direction, locale, resolvedThemeMode]);
+
+  // Create the theme with all configurations
+  const theme = useMemo(
     () =>
-      createTheme({
+      createAppTheme({
         direction,
-        palette: {
-          mode: themeMode,
-          primary: {
-            main: "#1976d2",
-          },
-          secondary: {
-            main: "#9c27b0",
-          },
-        },
-        typography: {
-          fontFamily:
-            direction === "rtl"
-              ? '"IBM Plex Sans Arabic", "Roboto", "Helvetica", "Arial", sans-serif'
-              : '"Roboto", "Helvetica", "Arial", sans-serif',
-        },
+        themeMode: resolvedThemeMode,
+        locale,
       }),
-    [direction, themeMode],
+    [direction, resolvedThemeMode, locale]
   );
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </MuiThemeProvider>
+    <CacheProvider value={cache}>
+      {/* Key forces remount when direction changes, ensuring clean style injection */}
+      <MuiThemeProvider key={key} theme={theme}>
+        <CssBaseline enableColorScheme />
+        {children}
+      </MuiThemeProvider>
+    </CacheProvider>
   );
 };
