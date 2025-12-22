@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   Stack,
+  TablePagination,
 } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -69,6 +70,14 @@ export const DashboardPage: React.FC = () => {
           </CardContent>
         </Card>
       </Stack>
+      {/* mock table pagination */}
+      <TablePagination
+        component="div"
+        count={100}
+        page={1}
+        rowsPerPage={10}
+        onPageChange={() => {}}
+      />
     </Container>
   );
 };
