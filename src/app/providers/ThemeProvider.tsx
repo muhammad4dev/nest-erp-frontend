@@ -13,16 +13,26 @@ interface ThemeProviderProps {
 
 // Module-level cache manager using closure - outside React's render cycle
 // Creates fresh cache on each direction change with incrementing keys
+// Properly flushes old cache to prevent memory leaks
 const createCacheManager = () => {
   let keyCounter = 0;
+  let currentCache: EmotionCache | null = null;
 
   return {
     refreshCache: (
       direction: "rtl" | "ltr"
-    ): { cache: EmotionCache; key: number } => ({
-      cache: createEmotionCache(direction),
-      key: keyCounter++,
-    }),
+    ): { cache: EmotionCache; key: number } => {
+      // Flush old cache to prevent style/memory leaks
+      if (currentCache) {
+        currentCache.sheet.flush();
+      }
+
+      currentCache = createEmotionCache(direction);
+      return {
+        cache: currentCache,
+        key: keyCounter++,
+      };
+    },
   };
 };
 
