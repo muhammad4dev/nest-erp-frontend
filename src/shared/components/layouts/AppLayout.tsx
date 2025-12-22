@@ -11,7 +11,6 @@ import {
   ListItemButton,
   ListItemText,
   IconButton,
-  useTheme,
 } from "@mui/material";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Outlet } from "@tanstack/react-router";
@@ -25,8 +24,10 @@ import { IfAllowed } from "@/lib/rbac/components";
 import { AppLink } from "@/shared/components/ui/AppLink";
 import { LocaleSwitcher } from "@/shared/components/ui/LocaleSwitcher";
 import { NotificationCenter } from "@/shared/components/ui/NotificationCenter";
+import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
 import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 import { useAuthStore } from "@/stores/authStore";
+
 const DRAWER_WIDTH = 240;
 
 export const AppLayout: React.FC = () => {
@@ -35,8 +36,9 @@ export const AppLayout: React.FC = () => {
   const { user } = useAuthStore();
   const logoutMutation = useLogout();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const theme = useTheme();
-  const isRTL = theme.direction === "rtl";
+
+  // Note: We don't need to manually switch anchor for RTL.
+  // The stylis-plugin-rtl automatically flips left/right in CSS.
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -86,9 +88,8 @@ export const AppLayout: React.FC = () => {
         position="fixed"
         sx={{
           width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
-          ...(isRTL
-            ? { mr: { sm: `${DRAWER_WIDTH}px` } }
-            : { ml: { sm: `${DRAWER_WIDTH}px` } }),
+          // RTL/LTR margin is handled by stylis-plugin-rtl
+          ml: { sm: `${DRAWER_WIDTH}px` },
         }}
       >
         <Toolbar>
@@ -106,6 +107,8 @@ export const AppLayout: React.FC = () => {
           </Typography>
 
           <LocaleSwitcher />
+
+          <ThemeToggle />
 
           <NotificationCenter />
 
@@ -134,7 +137,7 @@ export const AppLayout: React.FC = () => {
               width: DRAWER_WIDTH,
             },
           }}
-          anchor={isRTL ? "right" : "left"}
+          anchor="left"
         >
           {drawer}
         </Drawer>
@@ -147,7 +150,7 @@ export const AppLayout: React.FC = () => {
               width: DRAWER_WIDTH,
             },
           }}
-          anchor={isRTL ? "right" : "left"}
+          anchor="left"
           open
         >
           {drawer}
