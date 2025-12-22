@@ -5,14 +5,19 @@ export const APP_CONFIG = {
   defaultLanguage:
     (localStorage.getItem("app_locale") as SupportedLanguage) ||
     ("en" as SupportedLanguage),
-  defaultDirection: "ltr",
+  defaultDirection: "ltr" as "ltr" | "rtl",
   apiBaseUrl: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
 } as const;
 
 export const STORAGE_KEYS = {
   AUTH: "auth",
-  THEME_MODE: "theme_mode",
-  LOCALE: "app_locale",
+  USER_PREFERENCES: "user_preferences",
+} as const;
+
+export const THEME_MODE = {
+  LIGHT: "light",
+  DARK: "dark",
+  SYSTEM: "system",
 } as const;
 
 export const ROUTES = {
