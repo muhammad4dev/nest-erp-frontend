@@ -76,43 +76,67 @@ A production-ready, enterprise-grade React 19 boilerplate with comprehensive fea
 
 ```
 src/
-├── app/                      # App shell & configuration
-│   ├── providers/            # React providers (Theme, etc.)
-│   ├── router/               # Router configuration
-│   │   ├── index.ts          # Main router & Public routes
-│   │   ├── layouts.ts        # Layout route definitions
-│   │   ├── appRoutes.ts# Protected routes collection
-│   │   └── routeGuard.ts     # RBAC protection logic
-│   └── index.tsx             # App entry point
-├── features/                 # Feature modules
-│   ├── auth/                 # Authentication feature
-│   ├── dashboard/            # Dashboard feature
-│   ├── admin/                # Admin feature
-│   └── forbidden/            # 403 page
-├── shared/                   # Shared components
-│   └── components/
-│       ├── layouts/          # Layout components
-│       └── ui/               # Reusable UI components
-├── stores/                   # Zustand stores
-│   ├── authStore.ts          # Authentication state
-│   └── preferencesStore.ts   # User preferences
-├── lib/                      # Core infrastructure
-│   ├── rbac/                 # RBAC system
-│   │   ├── types.ts          # Role & permission types
-│   │   ├── guards.ts         # Access control logic
-│   │   └── components.tsx    # RBAC UI components
-│   ├── i18n/                 # Internationalization
-│   │   ├── config.ts         # i18next setup
-│   │   └── locales/          # Translation files
-│   └── api/                  # API layer
-│       ├── client.ts         # Axios instance
-│       ├── query-client.ts   # TanStack Query config
-│       ├── query-keys.ts     # Query key factory
-│       ├── queries/          # Query hooks
-│       └── mutations/        # Mutation hooks
-├── config/                   # Global configuration
-│   └── constants.ts          # App constants
-└── main.tsx                  # React entry point
+├── app/                          # App shell & configuration
+│   ├── providers/                # React providers
+│   │   └── ThemeProvider.tsx     # Theme + RTL + Emotion cache
+│   ├── router/                   # Router configuration
+│   │   ├── index.ts              # Main router & public routes
+│   │   ├── layouts.ts            # Layout route definitions
+│   │   ├── appRoutes.ts          # Protected routes collection
+│   │   └── routeGuard.ts         # RBAC protection logic
+│   └── index.tsx                 # App entry point
+├── features/                     # Feature modules
+│   ├── auth/                     # Authentication feature
+│   ├── dashboard/                # Dashboard feature
+│   ├── admin/                    # Admin feature
+│   ├── users/                    # User management
+│   └── forbidden/                # 403 page
+├── shared/                       # Shared resources
+│   ├── components/
+│   │   ├── layouts/              # Layout components
+│   │   ├── ui/                   # Reusable UI components
+│   │   │   ├── ThemeToggle.tsx   # Dark/Light/System toggle
+│   │   │   ├── LocaleSwitcher.tsx# Language switcher
+│   │   │   ├── PWAInstallPrompt.tsx
+│   │   │   ├── PWAUpdatePrompt.tsx
+│   │   │   ├── NotificationCenter.tsx
+│   │   │   └── NetworkStatus.tsx # Offline indicator
+│   │   └── NotFound.tsx          # 404 page
+│   └── hooks/                    # Custom React hooks
+│       ├── useSystemTheme.ts     # OS theme detection
+│       ├── useSSE.ts             # Server-Sent Events
+│       ├── useNetworkStatus.ts   # Online/offline status
+│       └── useAppNavigate.ts     # Type-safe navigation
+├── stores/                       # Zustand stores
+│   ├── authStore.ts              # Authentication state
+│   ├── preferencesStore.ts       # Theme, locale, direction
+│   └── notificationStore.ts      # Notification state
+├── lib/                          # Core infrastructure
+│   ├── theme/                    # MUI theme system
+│   │   ├── index.ts              # Theme factory
+│   │   ├── createEmotionCache.ts # RTL/LTR cache
+│   │   ├── palette.ts            # Light/dark palettes
+│   │   ├── typography.ts         # Direction-aware fonts
+│   │   └── components.ts         # Component overrides
+│   ├── i18n/                     # Internationalization
+│   │   ├── config.ts             # i18next setup
+│   │   ├── languageConfig.ts     # Language metadata & RTL
+│   │   ├── useI18nFormat.ts      # Number/date formatting
+│   │   └── locales/              # Translation files (en, ar)
+│   ├── rbac/                     # RBAC system
+│   │   ├── types.ts              # Role & permission types
+│   │   ├── guards.ts             # Access control logic
+│   │   └── components.tsx        # RBAC UI components
+│   └── api/                      # API layer
+│       ├── client.ts             # Axios instance
+│       ├── query-client.ts       # TanStack Query config
+│       ├── query-keys.ts         # Query key factory
+│       ├── queries/              # Query hooks
+│       └── mutations/            # Mutation hooks
+├── config/                       # Global configuration
+│   └── constants.ts              # App constants
+├── sw.ts                         # Service Worker (PWA)
+└── main.tsx                      # React entry point
 ```
 
 ## 🚀 Quick Start
@@ -168,6 +192,7 @@ Server runs at `http://localhost:5173` (exposed on network with `--host`)
 - [Route Factory](./docs/route-factory-guide.md) - Declarative routing
 - [Feature Generator](./docs/feature-generator.md) - CLI tool usage
 - [Code Splitting](./docs/code-splitting.md) - Performance optimization
+- [RTL, i18n & Theme Guide](./docs/rtl-i18n-theme-guide.md) - RTL support, theming, and i18n deep dive
 
 ## 🎯 Key Features Explained
 
@@ -201,7 +226,7 @@ const dashboardRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "dashboard",
   component: lazyRouteComponent(() =>
-    import("./pages/DashboardPage").then((m) => ({ default: m.DashboardPage })),
+    import("./pages/DashboardPage").then((m) => ({ default: m.DashboardPage }))
   ),
   beforeLoad: () => RouteGuard({ roles: ["USER", "ADMIN"] }),
 });
@@ -223,15 +248,33 @@ Generates:
 - ✅ RBAC integration
 - ✅ Lazy loading
 
-### 4. Internationalization
+### 4. Internationalization & RTL Support
+
+The i18n system is deeply integrated with RTL and theming:
 
 ```typescript
-const { t } = useTranslation();
+import { useTranslation } from 'react-i18next';
+import { usePreferencesStore } from '@/stores/preferencesStore';
 
-<Typography>{t('welcome.message')}</Typography>
+const { t } = useTranslation();
+const { locale, direction, setLocale, setDirection } = usePreferencesStore();
+
+// Use translations
+<Typography>{t('common.welcome')}</Typography>
+
+// Switch locale (direction is updated automatically for RTL languages)
+setLocale('ar'); // Automatically sets direction to 'rtl'
+setLocale('en'); // Automatically sets direction to 'ltr'
 ```
 
-Switch languages with `LocaleSwitcher` component - RTL automatically applied.
+**RTL Features:**
+
+- 🔄 **Automatic layout flipping** - Emotion cache with `@mui/stylis-plugin-rtl`
+- 🧹 **Memory-safe cache management** - Old caches are flushed on direction change
+- 🎯 **Per-direction style injection** - Separate cache keys for RTL/LTR
+
+**LocaleSwitcher Component:**
+Use the built-in `LocaleSwitcher` component in your layout for easy language switching.
 
 ### 5. Code Splitting
 
@@ -241,7 +284,7 @@ All routes are lazy-loaded:
 const DashboardPage = lazyRouteComponent(() =>
   import("@/features/dashboard/pages/DashboardPage").then((m) => ({
     default: m.DashboardPage,
-  })),
+  }))
 );
 ```
 
@@ -278,15 +321,59 @@ import { useAuthStore } from "@/stores/authStore";
 
 ### Theme Customization
 
-Edit `src/app/providers/ThemeProvider.tsx`:
+The theming system supports **Light**, **Dark**, and **System** modes with automatic OS preference detection:
 
 ```typescript
-createTheme({
-  palette: {
-    primary: { main: "#1976d2" },
-    secondary: { main: "#9c27b0" },
-  },
-});
+import { usePreferencesStore } from "@/stores/preferencesStore";
+
+const { themeMode, setThemeMode, toggleTheme } = usePreferencesStore();
+
+// Set theme mode
+setThemeMode("light"); // Force light mode
+setThemeMode("dark"); // Force dark mode
+setThemeMode("system"); // Follow OS preference (default)
+
+// Toggle between light/dark
+toggleTheme();
+```
+
+**Theme Modes:**
+| Mode | Behavior |
+|------|----------|
+| `light` | Always light theme |
+| `dark` | Always dark theme |
+| `system` | Reactively follows OS color scheme preference |
+
+**Customize Palettes:**
+
+Edit `src/lib/theme/palette.ts`:
+
+```typescript
+export const lightPalette = {
+  mode: "light" as const,
+  primary: { main: "#1976d2" },
+  secondary: { main: "#9c27b0" },
+  // ... more colors
+};
+
+export const darkPalette = {
+  mode: "dark" as const,
+  primary: { main: "#90caf9" },
+  secondary: { main: "#ce93d8" },
+  // ... more colors
+};
+```
+
+**Memory-Safe Emotion Cache:**
+
+The `ThemeProvider` uses a module-level cache manager that properly flushes old caches on direction changes, preventing memory leaks:
+
+```typescript
+// Old cache is flushed before creating new one
+if (currentCache) {
+  currentCache.sheet.flush();
+}
+currentCache = createEmotionCache(direction);
 ```
 
 ## 📦 Bundle Size
@@ -353,21 +440,40 @@ Edit `src/lib/rbac/types.ts`:
 export type Permission = "view:dashboard" | "my:new:permission"; // Add here
 ```
 
-## 🌍 Internationalization
+## 🌍 Internationalization & Theme System
+
+> 📚 **For a comprehensive deep-dive**, see the [RTL, i18n & Theme Guide](./docs/rtl-i18n-theme-guide.md) which covers architecture, troubleshooting, and advanced patterns.
 
 ### Adding Languages
 
-1. Create translation file: `src/lib/i18n/locales/fr.json`
-2. Add to config: `src/lib/i18n/config.ts`
-3. Update `LocaleSwitcher` component
+1. **Create translation file:** `src/lib/i18n/locales/fr.json`
+2. **Add to i18n config:**
+
+```typescript
+// src/lib/i18n/config.ts
+import frCommon from "./locales/fr.json";
+
+export const resources = {
+  en: { common: enCommon },
+  ar: { common: arCommon },
+  fr: { common: frCommon }, // Add new language
+};
+```
+
+3. **Update LocaleSwitcher** to include the new language option
 
 ### Translation Files
+
+Translation files use namespaces (default: `common`):
 
 ```json
 {
   "common": {
     "welcome": "Welcome",
     "loading": "Loading..."
+  },
+  "dashboard": {
+    "title": "Dashboard"
   }
 }
 ```
@@ -375,8 +481,42 @@ export type Permission = "view:dashboard" | "my:new:permission"; // Add here
 ### Usage
 
 ```typescript
+import { useTranslation } from "react-i18next";
+
 const { t } = useTranslation();
+
 t("common.welcome"); // "Welcome"
+t("dashboard.title"); // "Dashboard"
+```
+
+### RTL Languages
+
+RTL languages (Arabic, Hebrew, etc.) are automatically detected. When switching to an RTL language:
+
+1. Document `dir` attribute is updated
+2. Emotion cache is refreshed with RTL stylis plugin
+3. MUI components automatically flip layout
+4. Old cache is flushed to prevent memory leaks
+
+### Theme Toggle Component
+
+Use the built-in theme toggle in your layout:
+
+```tsx
+import { ThemeToggle } from "@/shared/components/ui/ThemeToggle";
+
+// In your AppBar
+<ThemeToggle />;
+```
+
+### System Theme Detection
+
+The `useResolvedTheme` hook reactively listens to OS color scheme changes:
+
+```typescript
+import { useResolvedTheme } from "@/shared/hooks/useSystemTheme";
+
+const resolvedMode = useResolvedTheme("system"); // Returns 'light' or 'dark'
 ```
 
 ## 🧪 Testing
