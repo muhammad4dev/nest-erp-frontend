@@ -14,6 +14,8 @@ interface AuthState {
   // Actions
   login: (user: AuthUser) => void;
   logout: () => void;
+  updateToken: (token: string) => void;
+  updateTokens: (accessToken: string, refreshToken: string) => void;
   setAvailableTenants: (tenants: Tenant[]) => void;
   selectTenant: (tenantId: string, tenantName: string) => void;
 }
@@ -43,6 +45,32 @@ export const useAuthStore = create<AuthState>()(
         });
       },
 
+      updateToken: (token: string) => {
+        const currentUser = get().user;
+        if (currentUser) {
+          set({
+            user: {
+              ...currentUser,
+              token,
+            },
+          });
+        }
+      },
+
+      updateTokens: (accessToken: string, refreshToken: string) => {
+        const currentUser = get().user;
+        if (currentUser) {
+          const updatedUser = {
+            ...currentUser,
+            token: accessToken,
+            refreshToken,
+          };
+
+          // Update in-memory state (Zustand persist will handle localStorage)
+          set({ user: updatedUser });
+        }
+      },
+
       setAvailableTenants: (tenants) => {
         set({ availableTenants: tenants });
       },
@@ -51,7 +79,6 @@ export const useAuthStore = create<AuthState>()(
         const currentUser = get().user;
 
         if (!currentUser) {
-          console.error("Cannot select tenant: user not authenticated");
           return;
         }
 
@@ -69,6 +96,36 @@ export const useAuthStore = create<AuthState>()(
     {
       name: STORAGE_KEYS.AUTH,
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
+      // Only persist essential user data (exclude large roles/permissions arrays)
+      partialize: (state) => ({
+        isAuthenticated: state.isAuthenticated,
+        selectedTenantId: state.selectedTenantId,
+        availableTenants: state.availableTenants,
+        user: state.user
+          ? {
+              id: state.user.id,
+              name: state.user.name,
+              email: state.user.email,
+              role: state.user.role,
+              token: state.user.token,
+              refreshToken: state.user.refreshToken,
+              tenantId: state.user.tenantId,
+              tenantName: state.user.tenantName,
+              // Exclude roles and permissions (will be fetched fresh from /auth/me)
+              roles: [],
+              permissions: [],
+            }
+          : null,
+      }),
+      onRehydrateStorage: () => (state) => {
+        // After hydration, ensure isAuthenticated matches user state
+        if (state && state.user && !state.isAuthenticated) {
+          state.isAuthenticated = true;
+        }
+        if (state && !state.user && state.isAuthenticated) {
+          state.isAuthenticated = false;
+        }
+      },
+    }
+  )
 );

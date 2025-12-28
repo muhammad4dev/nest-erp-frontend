@@ -6,7 +6,15 @@ export const APP_CONFIG = {
     (localStorage.getItem("app_locale") as SupportedLanguage) ||
     ("en" as SupportedLanguage),
   defaultDirection: "ltr" as "ltr" | "rtl",
-  apiBaseUrl: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
+  apiBaseUrl: import.meta.env.VITE_API_URL || "http://localhost:3000",
+} as const;
+
+export const API_PATHS = {
+  AUTH_LOGIN: "/auth/login",
+  AUTH_ME: "/auth/me",
+  AUTH_REFRESH: "/auth/refresh",
+  USERS: "/users",
+  TENANTS: "/tenants",
 } as const;
 
 export const STORAGE_KEYS = {

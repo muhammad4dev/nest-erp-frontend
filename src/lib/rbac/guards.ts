@@ -5,10 +5,35 @@ import type { AuthUser, RBACMeta, UserRole, Permission } from "./types";
  */
 export const hasRole = (user: AuthUser | null, role: UserRole): boolean => {
   if (!user) return false;
-  if (user.role === "ADMIN") return true; // Admin has Access to everything by role
 
-  // Hierarchy check could go here if needed
+  // Check primary role first
+  if (user.role === "ADMIN") return true; // Admin has access to everything by role
+
+  // Check if user has the role in their roles array
+  const hasRoleInArray = user.roles?.some(
+    (r) => r.name.toUpperCase() === role.toUpperCase()
+  );
+
+  if (hasRoleInArray) return true;
+
+  // Fallback to legacy primary role check
   return user.role === role;
+};
+
+/**
+ * Checks if a user has a specific role by backend role name.
+ * @param user - The authenticated user
+ * @param roleName - The exact role name from backend (e.g., 'admin', 'manager')
+ */
+export const hasRoleByName = (
+  user: AuthUser | null,
+  roleName: string
+): boolean => {
+  if (!user) return false;
+  return (
+    user.roles?.some((r) => r.name.toLowerCase() === roleName.toLowerCase()) ||
+    false
+  );
 };
 
 /**
@@ -16,7 +41,7 @@ export const hasRole = (user: AuthUser | null, role: UserRole): boolean => {
  */
 export const hasPermission = (
   user: AuthUser | null,
-  permission: Permission,
+  permission: Permission
 ): boolean => {
   if (!user) return false;
   if (user.role === "ADMIN") return true; // Admin has all permissions
@@ -29,7 +54,7 @@ export const hasPermission = (
  */
 export const checkRoles = (
   user: AuthUser | null,
-  allowedRoles?: UserRole[],
+  allowedRoles?: UserRole[]
 ): boolean => {
   if (!allowedRoles || allowedRoles.length === 0) return true;
   if (!user) return false;
@@ -42,13 +67,13 @@ export const checkRoles = (
  */
 export const checkPermissions = (
   user: AuthUser | null,
-  requiredPermissions?: Permission[],
+  requiredPermissions?: Permission[]
 ): boolean => {
   if (!requiredPermissions || requiredPermissions.length === 0) return true;
   if (!user) return false;
 
   return requiredPermissions.every((permission) =>
-    hasPermission(user, permission),
+    hasPermission(user, permission)
   );
 };
 

@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type {
   User,
@@ -10,10 +10,10 @@ import type {
   UpdateRoleDto,
   CreateTenantDto,
   UpdateTenantDto,
-} from '@/types/api.types';
+} from "@/types/api.types";
 
-import { apiClient } from '../client';
-import { queryKeys } from '../query-keys';
+import { apiClient } from "../client";
+import { queryKeys } from "../query-keys";
 
 /**
  * Create new user
@@ -23,10 +23,7 @@ export const useCreateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CreateUserDto) => {
-      const response = await apiClient.post<User>('/users', data);
-      return response;
-    },
+    mutationFn: (data: CreateUserDto) => apiClient.post<User>("/users", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
     },
@@ -35,16 +32,14 @@ export const useCreateUser = () => {
 
 /**
  * Update existing user
- * PATCH /users/:id
+ * PUT /users/:id
  */
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateUserDto }) => {
-      const response = await apiClient.patch<User>(`/users/${id}`, data);
-      return response;
-    },
+    mutationFn: ({ id, data }: { id: string; data: UpdateUserDto }) =>
+      apiClient.put<User>(`/users/${id}`, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
       queryClient.invalidateQueries({
@@ -72,6 +67,81 @@ export const useDeleteUser = () => {
 };
 
 /**
+ * Assign role to user
+ * POST /users/:id/roles/:roleId
+ */
+export const useAssignUserRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ userId, roleId }: { userId: string; roleId: string }) =>
+      apiClient.post<User>(`/users/${userId}/roles/${roleId}`),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.users.detail(variables.userId),
+      });
+    },
+  });
+};
+
+/**
+ * Remove role from user
+ * DELETE /users/:id/roles/:roleId
+ */
+export const useRemoveUserRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      userId,
+      roleId,
+    }: {
+      userId: string;
+      roleId: string;
+    }) => {
+      await apiClient.delete(`/users/${userId}/roles/${roleId}`);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.users.detail(variables.userId),
+      });
+    },
+  });
+};
+
+/**
+ * Change user password
+ * POST /users/:id/change-password
+ */
+export const useChangeUserPassword = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      userId,
+      currentPassword,
+      newPassword,
+    }: {
+      userId: string;
+      currentPassword: string;
+      newPassword: string;
+    }) => {
+      await apiClient.post(`/users/${userId}/change-password`, {
+        currentPassword,
+        newPassword,
+      });
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.users.detail(variables.userId),
+      });
+    },
+  });
+};
+
+/**
  * Create new role
  * POST /roles
  */
@@ -79,10 +149,7 @@ export const useCreateRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CreateRoleDto) => {
-      const response = await apiClient.post<Role>('/roles', data);
-      return response;
-    },
+    mutationFn: (data: CreateRoleDto) => apiClient.post<Role>("/roles", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.roles.all });
     },
@@ -97,10 +164,8 @@ export const useUpdateRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateRoleDto }) => {
-      const response = await apiClient.patch<Role>(`/roles/${id}`, data);
-      return response;
-    },
+    mutationFn: ({ id, data }: { id: string; data: UpdateRoleDto }) =>
+      apiClient.patch<Role>(`/roles/${id}`, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.roles.all });
       queryClient.invalidateQueries({
@@ -118,24 +183,36 @@ export const useAssignRolePermissions = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       roleId,
       permissionIds,
     }: {
       roleId: string;
       permissionIds: string[];
-    }) => {
-      const response = await apiClient.post<Role>(
-        `/roles/${roleId}/permissions`,
-        { permissionIds },
-      );
-      return response;
-    },
+    }) =>
+      apiClient.post<Role>(`/roles/${roleId}/permissions`, { permissionIds }),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.roles.all });
       queryClient.invalidateQueries({
         queryKey: queryKeys.roles.detail(variables.roleId),
       });
+    },
+  });
+};
+
+/**
+ * Delete role
+ * DELETE /roles/:id
+ */
+export const useDeleteRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete(`/roles/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.roles.all });
     },
   });
 };
@@ -148,10 +225,8 @@ export const useCreateTenant = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: CreateTenantDto) => {
-      const response = await apiClient.post<Tenant>('/tenants', data);
-      return response;
-    },
+    mutationFn: (data: CreateTenantDto) =>
+      apiClient.post<Tenant>("/tenants", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tenants.all });
     },
@@ -160,16 +235,14 @@ export const useCreateTenant = () => {
 
 /**
  * Update existing tenant
- * PATCH /tenants/:id
+ * put /tenants/:id
  */
 export const useUpdateTenant = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateTenantDto }) => {
-      const response = await apiClient.patch<Tenant>(`/tenants/${id}`, data);
-      return response;
-    },
+    mutationFn: ({ id, data }: { id: string; data: UpdateTenantDto }) =>
+      apiClient.put<Tenant>(`/tenants/${id}`, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tenants.all });
       queryClient.invalidateQueries({

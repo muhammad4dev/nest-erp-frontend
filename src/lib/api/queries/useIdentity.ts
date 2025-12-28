@@ -1,6 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 
-import type { User, Role, Tenant, PaginatedResponse } from "@/types/api.types";
+import type {
+  User,
+  Role,
+  Tenant,
+  Permission,
+  PaginatedResponse,
+} from "@/types/api.types";
 
 import { apiClient } from "../client";
 import { queryKeys } from "../query-keys";
@@ -13,12 +19,10 @@ import type { UserListFilters } from "../query-keys";
 export const useUsers = (filters?: UserListFilters) => {
   return useQuery({
     queryKey: queryKeys.users.list(filters),
-    queryFn: async () => {
-      const response = await apiClient.get<PaginatedResponse<User>>("/users", {
+    queryFn: () =>
+      apiClient.get<User>("/users", {
         params: filters,
-      });
-      return response;
-    },
+      }),
   });
 };
 
@@ -29,10 +33,7 @@ export const useUsers = (filters?: UserListFilters) => {
 export const useUser = (id: string) => {
   return useQuery({
     queryKey: queryKeys.users.detail(id),
-    queryFn: async () => {
-      const response = await apiClient.get<User>(`/users/${id}`);
-      return response;
-    },
+    queryFn: () => apiClient.get<User>(`/users/${id}`),
     enabled: !!id,
   });
 };
@@ -44,10 +45,7 @@ export const useUser = (id: string) => {
 export const useRoles = () => {
   return useQuery({
     queryKey: queryKeys.roles.all,
-    queryFn: async () => {
-      const response = await apiClient.get<Role[]>("/roles");
-      return response;
-    },
+    queryFn: () => apiClient.get<Role[]>("/roles"),
   });
 };
 
@@ -58,10 +56,7 @@ export const useRoles = () => {
 export const useRole = (id: string) => {
   return useQuery({
     queryKey: queryKeys.roles.detail(id),
-    queryFn: async () => {
-      const response = await apiClient.get<Role>(`/roles/${id}`);
-      return response;
-    },
+    queryFn: () => apiClient.get<Role>(`/roles/${id}`),
     enabled: !!id,
   });
 };
@@ -73,10 +68,18 @@ export const useRole = (id: string) => {
 export const useTenants = () => {
   return useQuery({
     queryKey: queryKeys.tenants.all,
-    queryFn: async () => {
-      const response = await apiClient.get<Tenant[]>("/tenants");
-      return response;
-    },
+    queryFn: () => apiClient.get<Tenant[]>("/tenants"),
+  });
+};
+
+/**
+ * Fetch all available permissions
+ * GET /roles/permissions/list
+ */
+export const usePermissions = () => {
+  return useQuery({
+    queryKey: ["permissions"],
+    queryFn: () => apiClient.get<Permission[]>("/roles/permissions/list"),
   });
 };
 
@@ -87,10 +90,7 @@ export const useTenants = () => {
 export const useTenant = (id: string) => {
   return useQuery({
     queryKey: queryKeys.tenants.detail(id),
-    queryFn: async () => {
-      const response = await apiClient.get<Tenant>(`/tenants/${id}`);
-      return response;
-    },
+    queryFn: () => apiClient.get<Tenant>(`/tenants/${id}`),
     enabled: !!id,
   });
 };

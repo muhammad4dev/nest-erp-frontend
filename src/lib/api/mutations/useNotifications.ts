@@ -11,7 +11,7 @@ export const useMarkNotificationAsRead = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await axios.patch(`${API_URL}/${id}`);
+      await axios.put(`${API_URL}/${id}`);
     },
     onSuccess: (_, id) => {
       queryClient.setQueryData<NotificationHistoryItem[]>(

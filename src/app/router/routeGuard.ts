@@ -11,7 +11,13 @@ type RouteGuardConfig = {
   permissions?: Permission[];
 };
 
-export function RouteGuard(config: RouteGuardConfig, params: { lang: string }) {
+export async function RouteGuard(
+  config: RouteGuardConfig,
+  params: { lang: string }
+) {
+  // Ensure store is hydrated from localStorage before checking auth
+  await useAuthStore.persist.rehydrate();
+
   const { user, isAuthenticated } = useAuthStore.getState();
   const requiresAuth = config.requiresAuth ?? true;
 

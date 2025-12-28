@@ -19,14 +19,17 @@ export const LoginPage: React.FC = () => {
   const navigate = useAppNavigate();
   const loginMutation = useLogin();
 
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState("admin@email.com");
+  const [password, setPassword] = React.useState("123123");
+  const [tenantId, setTenantId] = React.useState(
+    "019b70ce-918a-7a54-8302-eef2203a2a22",
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      await loginMutation.mutateAsync({ email, password });
+      await loginMutation.mutateAsync({ email, password, tenantId });
       navigate({
         to: ROUTES.DASHBOARD,
       });
@@ -53,9 +56,20 @@ export const LoginPage: React.FC = () => {
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             {loginMutation.isError && (
               <Alert severity="error" sx={{ mb: 2 }}>
-                {t("common.error")}
+                {loginMutation.error?.message || t("auth.loginFailed")}
               </Alert>
             )}
+
+            <TextField
+              fullWidth
+              label="Tenant ID"
+              type="text"
+              value={tenantId}
+              onChange={(e) => setTenantId(e.target.value)}
+              margin="normal"
+              required
+              helperText="Enter your tenant UUID"
+            />
 
             <TextField
               fullWidth
@@ -91,9 +105,9 @@ export const LoginPage: React.FC = () => {
             <Typography
               variant="caption"
               display="block"
-              sx={{ mt: 2, textAlign: "center" }}
+              sx={{ mt: 2, textAlign: "center", color: "text.secondary" }}
             >
-              Try: user@example.com or admin@example.com
+              Demo: admin@email.com / 123123
             </Typography>
           </Box>
         </Paper>

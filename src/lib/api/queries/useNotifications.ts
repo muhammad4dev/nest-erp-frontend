@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useCallback } from "react";
 
+import { apiClient } from "../client";
 import { queryKeys } from "../query-keys";
 
 export interface NotificationHistoryItem {
@@ -13,15 +13,13 @@ export interface NotificationHistoryItem {
   read?: boolean;
 }
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/notifications`;
-
 export const useNotifications = () => {
   const queryClient = useQueryClient();
 
   const query = useQuery<NotificationHistoryItem[]>({
     queryKey: queryKeys.notifications.all,
     queryFn: async () => {
-      const response = await axios.get(API_URL);
+      const response = await apiClient.get("/notifications");
       return response.data;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
@@ -44,7 +42,7 @@ export const useNotifications = () => {
 
   return {
     ...query,
-    notifications: query.data || [],
+    notifications: Array.isArray(query.data) ? query.data : [],
     addLocalNotification,
   };
 };

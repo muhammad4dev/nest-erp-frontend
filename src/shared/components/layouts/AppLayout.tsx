@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 
 import { ROUTES } from "@/config/constants";
 import { useLogout } from "@/lib/api/mutations";
+import { useMe } from "@/lib/api/queries";
 import { IfAllowed } from "@/lib/rbac/components";
 import { AppLink } from "@/shared/components/ui/AppLink";
 import { LocaleSwitcher } from "@/shared/components/ui/LocaleSwitcher";
@@ -36,6 +37,9 @@ export const AppLayout: React.FC = () => {
   const { user } = useAuthStore();
   const logoutMutation = useLogout();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  // Fetch and keep user data fresh (roles, permissions)
+  useMe();
 
   // Note: We don't need to manually switch anchor for RTL.
   // The stylis-plugin-rtl automatically flips left/right in CSS.
@@ -78,6 +82,14 @@ export const AppLayout: React.FC = () => {
             <ListItemText primary={t("nav.users")} />
           </ListItemButton>
         </ListItem>
+
+        <IfAllowed roles={["ADMIN"]}>
+          <ListItem disablePadding>
+            <ListItemButton component={AppLink} to="/$lang/app/roles">
+              <ListItemText primary={t("nav.roles")} />
+            </ListItemButton>
+          </ListItem>
+        </IfAllowed>
       </List>
     </Box>
   );

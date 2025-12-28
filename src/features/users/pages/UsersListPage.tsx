@@ -1,152 +1,264 @@
-import { Person as PersonIcon } from "@mui/icons-material";
+import {
+  Person as PersonIcon,
+  Security as SecurityIcon,
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
 import {
   Container,
   Typography,
   Paper,
   Box,
   TextField,
-  MenuItem,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
   Chip,
   Button,
+  CircularProgress,
+  Alert,
+  IconButton,
+  Tooltip,
+  Stack,
 } from "@mui/material";
+import {
+  DataGrid,
+  type GridColDef,
+  GridActionsCellItem,
+} from "@mui/x-data-grid";
 import { useSearch } from "@tanstack/react-router";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useDeleteUser } from "@/lib/api/mutations/useIdentity";
+import { useUsers } from "@/lib/api/queries/useIdentity";
 import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
+import type { User } from "@/types/api.types";
 
-// Mock Data
-const MOCK_USERS = [
-  { id: "1", name: "Alice Johnson", role: "ADMIN", email: "alice@example.com" },
-  { id: "2", name: "Bob Smith", role: "USER", email: "bob@example.com" },
-  {
-    id: "3",
-    name: "Charlie Brown",
-    role: "USER",
-    email: "charlie@example.com",
-  },
-  {
-    id: "4",
-    name: "Diana Prince",
-    role: "MANAGER",
-    email: "diana@example.com",
-  },
-  {
-    id: "5",
-    name: "Eve Wilson",
-    role: "USER",
-    email: "eve@example.com",
-  },
-  {
-    id: "6",
-    name: "Frank Davis",
-    role: "MANAGER",
-    email: "frank@example.com",
-  },
-  {
-    id: "7",
-    name: "Grace Johnson",
-    role: "USER",
-    email: "grace@example.com",
-  },
-  {
-    id: "8",
-    name: "Hank Williams",
-    role: "ADMIN",
-    email: "hank@example.com",
-  },
-];
+import { UserFormDialog } from "../components/UserFormDialog";
+import { UserRoleDialog } from "../components/UserRoleDialog";
 
 export const UsersListPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useAppNavigate();
-  const search = useSearch({ from: "/$lang/app/users" }) as { role?: string }; // We'll define this route ID in usersRoutes.ts
+  const search = useSearch({ from: "/$lang/app/users" }) as { role?: string };
 
-  const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // State for dialog
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [editingUser, setEditingUser] = React.useState<User | undefined>();
+  const [isRoleDialogOpen, setIsRoleDialogOpen] = React.useState(false);
+  const [selectedUserForRoles, setSelectedUserForRoles] = React.useState<
+    User | undefined
+  >();
+
+  // API hooks
+  const { data: usersResponse, isLoading, error } = useUsers();
+  const deleteMutation = useDeleteUser();
+
+  const users = React.useMemo(() => {
+    return Array.isArray(usersResponse)
+      ? usersResponse
+      : usersResponse?.data || [];
+  }, [usersResponse]);
+
+  // Filter users by role if specified in search params
+  const filteredUsers = React.useMemo(() => {
+    const userArray = Array.isArray(users) ? users : [];
+    if (!search.role) return userArray;
+    return userArray.filter((user: User) =>
+      user.roles?.some((role: { name: string }) => role.name === search.role),
+    );
+  }, [users, search.role]);
+
+  const handleCreateUser = () => {
+    setEditingUser(undefined);
+    setIsDialogOpen(true);
+  };
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user);
+    setIsDialogOpen(true);
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (
+      window.confirm(
+        t("users.confirmDelete", "Are you sure you want to delete this user?"),
+      )
+    ) {
+      await deleteMutation.mutateAsync(userId);
+    }
+  };
+
+  const handleViewUser = (userId: string) => {
     navigate({
-      search: (prev: Record<string, unknown>) => ({
-        ...prev,
-        role: event.target.value || undefined,
-      }),
+      to: "/$lang/app/users/$userId",
+      params: { userId },
     });
   };
 
-  const filteredUsers = React.useMemo(() => {
-    if (!search.role) return MOCK_USERS;
-    return MOCK_USERS.filter((user) => user.role === search.role);
-  }, [search.role]);
+  const handleEditUserRoles = (user: User) => {
+    setSelectedUserForRoles(user);
+    setIsRoleDialogOpen(true);
+  };
+
+  const columns: GridColDef<User>[] = [
+    {
+      field: "email",
+      headerName: t("users.email", "Email"),
+      flex: 1,
+      minWidth: 200,
+    },
+    {
+      field: "roles",
+      headerName: t("users.roles", "Roles"),
+      flex: 1,
+      minWidth: 200,
+      renderCell: (params) => (
+        <Stack direction="row" spacing={1} sx={{ py: 1 }}>
+          {params.row.roles?.map((role) => (
+            <Chip
+              key={role.id}
+              label={role.name}
+              size="small"
+              color={role.name === "ADMIN" ? "primary" : "default"}
+            />
+          ))}
+        </Stack>
+      ),
+    },
+    {
+      field: "isActive",
+      headerName: t("users.status", "Status"),
+      width: 120,
+      renderCell: (params) => (
+        <Chip
+          label={
+            params.row.isActive
+              ? t("common.active", "Active")
+              : t("common.inactive", "Inactive")
+          }
+          size="small"
+          color={params.row.isActive ? "success" : "default"}
+        />
+      ),
+    },
+    {
+      field: "createdAt",
+      headerName: t("users.createdAt", "Created At"),
+      width: 180,
+      valueFormatter: (value) => new Date(value).toLocaleDateString(),
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: t("common.actions", "Actions"),
+      width: 120,
+      getActions: (params) => [
+        <GridActionsCellItem
+          key="view"
+          icon={
+            <Tooltip title={t("common.view", "View")}>
+              <PersonIcon />
+            </Tooltip>
+          }
+          label="View"
+          onClick={() => handleViewUser(params.row.id)}
+        />,
+        <GridActionsCellItem
+          key="edit"
+          icon={
+            <Tooltip title={t("common.edit", "Edit")}>
+              <EditIcon />
+            </Tooltip>
+          }
+          label="Edit"
+          onClick={() => handleEditUser(params.row)}
+        />,
+        <GridActionsCellItem
+          key="roles"
+          icon={
+            <Tooltip title={t("users.assignRoles", "Assign Roles")}>
+              <SecurityIcon />
+            </Tooltip>
+          }
+          label="Roles"
+          onClick={() => handleEditUserRoles(params.row)}
+        />,
+        <GridActionsCellItem
+          key="delete"
+          icon={
+            <Tooltip title={t("common.delete", "Delete")}>
+              <DeleteIcon />
+            </Tooltip>
+          }
+          label="Delete"
+          onClick={() => handleDeleteUser(params.row.id)}
+          showInMenu
+        />,
+      ],
+    },
+  ];
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="xl">
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          {t("users.title", "User Directory")}
-        </Typography>
-
-        <Paper sx={{ p: 2, mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            {t("common.filters", "Filters")}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
+          <Typography variant="h4">
+            {t("users.title", "User Directory")}
           </Typography>
-          <TextField
-            select
-            label={t("users.role", "Role")}
-            value={search.role || ""}
-            onChange={handleRoleChange}
-            sx={{ minWidth: 200 }}
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleCreateUser}
           >
-            <MenuItem value="">{t("common.all", "All")}</MenuItem>
-            <MenuItem value="ADMIN">Admin</MenuItem>
-            <MenuItem value="USER">User</MenuItem>
-            <MenuItem value="MANAGER">Manager</MenuItem>
-          </TextField>
-        </Paper>
+            {t("users.createUser", "Create User")}
+          </Button>
+        </Box>
 
-        <List>
-          {filteredUsers.map((user) => (
-            <Paper key={user.id} sx={{ mb: 2 }}>
-              <ListItem
-                secondaryAction={
-                  <>
-                    <Chip
-                      label={user.role}
-                      size="small"
-                      color={user.role === "ADMIN" ? "primary" : "default"}
-                    />
-                    <Button
-                      variant="outlined"
-                      onClick={() =>
-                        navigate({
-                          to: "/$lang/app/users/$userId",
-                          params: { userId: user.id },
-                        })
-                      }
-                    >
-                      {t("common.view", "View")}
-                    </Button>
-                  </>
-                }
-              >
-                <ListItemAvatar>
-                  <Avatar>
-                    <PersonIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={user.name} secondary={user.email} />
-              </ListItem>
-            </Paper>
-          ))}
-          {filteredUsers.length === 0 && (
-            <Typography color="text.secondary" align="center">
-              {t("common.noResults", "No users found matching filters.")}
-            </Typography>
-          )}
-        </List>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {t("common.errorLoading", "Error loading users")}: {error.message}
+          </Alert>
+        )}
+
+        <Paper sx={{ height: 600, width: "100%" }}>
+          <DataGrid
+            rows={filteredUsers}
+            columns={columns}
+            loading={isLoading}
+            pageSizeOptions={[10, 25, 50, 100]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 25 } },
+            }}
+            disableRowSelectionOnClick
+            sx={{
+              "& .MuiDataGrid-cell:focus": {
+                outline: "none",
+              },
+            }}
+          />
+        </Paper>
       </Box>
+
+      <UserFormDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        user={editingUser}
+      />
+
+      {selectedUserForRoles && (
+        <UserRoleDialog
+          open={isRoleDialogOpen}
+          onClose={() => setIsRoleDialogOpen(false)}
+          user={selectedUserForRoles}
+        />
+      )}
     </Container>
   );
 };

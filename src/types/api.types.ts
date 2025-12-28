@@ -26,7 +26,9 @@ export interface User extends BaseEntity {
   email: string;
   passwordHash?: string; // Not returned from API
   isActive: boolean;
+  preferences?: Record<string, unknown>;
   roles?: Role[];
+  permissions?: Permission[];
   branchId?: string;
   branch?: Branch;
 }
@@ -39,6 +41,12 @@ export interface Role extends BaseEntity {
 }
 
 export interface Permission extends BaseEntity {
+  action: string;
+  resource: string;
+  description?: string;
+}
+
+export interface PermissionListItem {
   action: string;
   resource: string;
   description?: string;
@@ -64,7 +72,7 @@ export interface Tenant extends BaseEntity {
 export interface Account extends BaseEntity {
   code: string;
   name: string;
-  type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
+  type: "asset" | "liability" | "equity" | "revenue" | "expense";
   parentId?: string;
   parent?: Account;
   children?: Account[];
@@ -75,7 +83,7 @@ export interface JournalEntry extends BaseEntity {
   reference: string;
   transactionDate: string;
   description?: string;
-  status: 'DRAFT' | 'POSTED';
+  status: "DRAFT" | "POSTED";
   lines: JournalLine[];
 }
 
@@ -119,7 +127,7 @@ export interface Product extends BaseEntity {
   name: string;
   sku: string;
   description?: string;
-  type: 'PRODUCT' | 'SERVICE';
+  type: "PRODUCT" | "SERVICE";
   category?: string;
   unitPrice: number;
   costPrice: number;
@@ -137,7 +145,7 @@ export interface UnitOfMeasure extends BaseEntity {
 export interface Location extends BaseEntity {
   name: string;
   code: string;
-  type: 'WAREHOUSE' | 'STORE' | 'TRANSIT';
+  type: "WAREHOUSE" | "STORE" | "TRANSIT";
   address?: string;
 }
 
@@ -147,7 +155,7 @@ export interface StockMovement extends BaseEntity {
   locationId: string;
   location?: Location;
   quantity: number;
-  movementType: 'IN' | 'OUT' | 'ADJUSTMENT';
+  movementType: "IN" | "OUT" | "ADJUSTMENT";
   reference?: string;
   date: string;
 }
@@ -156,7 +164,7 @@ export interface StockMovement extends BaseEntity {
 
 export interface Partner extends BaseEntity {
   name: string;
-  type: 'customer' | 'vendor' | 'both';
+  type: "customer" | "vendor" | "both";
   email?: string;
   phone?: string;
   address?: string;
@@ -175,8 +183,37 @@ export interface LoginRequestDto {
 
 export interface LoginResponseDto {
   access_token: string;
-  refresh_token?: string;
-  user: User;
+  refresh_token: string;
+}
+
+export interface UserMeResponseDto {
+  id: string;
+  tenantId: string;
+  email: string;
+  preferences?: Record<string, unknown> | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  version: number;
+  roles?: Array<{
+    id: string;
+    tenantId: string;
+    name: string;
+    description?: string;
+    createdAt: string;
+    updatedAt: string;
+    version: number;
+    permissions?: Array<{
+      id: string;
+      tenantId: string;
+      action: string;
+      resource: string;
+      description?: string;
+      createdAt: string;
+      updatedAt: string;
+      version: number;
+    }>;
+  }>;
 }
 
 export interface RefreshTokenDto {
@@ -187,16 +224,13 @@ export interface RefreshTokenDto {
 export interface CreateUserDto {
   email: string;
   password: string;
-  tenantId: string;
-  branchId?: string;
-  roles?: string[];
+  tenantId?: string;
 }
 
 export interface UpdateUserDto {
   email?: string;
   isActive?: boolean;
-  branchId?: string;
-  roles?: string[];
+  preferences?: Record<string, unknown>;
 }
 
 // Role DTOs
@@ -228,14 +262,14 @@ export interface UpdateTenantDto {
 export interface CreateAccountDto {
   code: string;
   name: string;
-  type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
+  type: "asset" | "liability" | "equity" | "revenue" | "expense";
   parentId?: string;
 }
 
 export interface UpdateAccountDto {
   code?: string;
   name?: string;
-  type?: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
+  type?: "asset" | "liability" | "equity" | "revenue" | "expense";
   parentId?: string;
   isActive?: boolean;
 }
@@ -271,7 +305,7 @@ export interface CreateProductDto {
   name: string;
   sku: string;
   description?: string;
-  type: 'PRODUCT' | 'SERVICE';
+  type: "PRODUCT" | "SERVICE";
   category?: string;
   unitPrice: number;
   costPrice: number;
@@ -282,7 +316,7 @@ export interface UpdateProductDto {
   name?: string;
   sku?: string;
   description?: string;
-  type?: 'PRODUCT' | 'SERVICE';
+  type?: "PRODUCT" | "SERVICE";
   category?: string;
   unitPrice?: number;
   costPrice?: number;
@@ -293,7 +327,7 @@ export interface UpdateProductDto {
 // Partner DTOs
 export interface CreatePartnerDto {
   name: string;
-  type: 'customer' | 'vendor' | 'both';
+  type: "customer" | "vendor" | "both";
   email?: string;
   phone?: string;
   address?: string;
@@ -303,7 +337,7 @@ export interface CreatePartnerDto {
 
 export interface UpdatePartnerDto {
   name?: string;
-  type?: 'customer' | 'vendor' | 'both';
+  type?: "customer" | "vendor" | "both";
   email?: string;
   phone?: string;
   address?: string;
