@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type {
   Account,
@@ -9,10 +9,10 @@ import type {
   CreateJournalEntryDto,
   CreatePaymentTermDto,
   UpdatePaymentTermDto,
-} from '@/types/api.types';
+} from "@/types/api.types";
 
-import { apiClient } from '../client';
-import { queryKeys } from '../query-keys';
+import { apiClient } from "../client";
+import { queryKeys } from "../query-keys";
 
 /**
  * Create new account in chart of accounts
@@ -23,7 +23,7 @@ export const useCreateAccount = () => {
 
   return useMutation({
     mutationFn: async (data: CreateAccountDto) => {
-      const response = await apiClient.post<Account>('/finance/accounts', data);
+      const response = await apiClient.post<Account>("/finance/accounts", data);
       return response;
     },
     onSuccess: () => {
@@ -34,7 +34,7 @@ export const useCreateAccount = () => {
 
 /**
  * Update existing account
- * PATCH /finance/accounts/:id
+ * put /finance/accounts/:id
  */
 export const useUpdateAccount = () => {
   const queryClient = useQueryClient();
@@ -47,7 +47,7 @@ export const useUpdateAccount = () => {
       id: string;
       data: UpdateAccountDto;
     }) => {
-      const response = await apiClient.patch<Account>(
+      const response = await apiClient.put<Account>(
         `/finance/accounts/${id}`,
         data,
       );
@@ -89,7 +89,7 @@ export const useCreateJournalEntry = () => {
   return useMutation({
     mutationFn: async (data: CreateJournalEntryDto) => {
       const response = await apiClient.post<JournalEntry>(
-        '/finance/journal-entries',
+        "/finance/journal-entries",
         data,
       );
       return response;
@@ -174,7 +174,7 @@ export const useCreatePaymentTerm = () => {
   return useMutation({
     mutationFn: async (data: CreatePaymentTermDto) => {
       const response = await apiClient.post<PaymentTerm>(
-        '/finance/payment-terms',
+        "/finance/payment-terms",
         data,
       );
       return response;
@@ -187,7 +187,7 @@ export const useCreatePaymentTerm = () => {
 
 /**
  * Update payment term
- * PATCH /finance/payment-terms/:id
+ * put /finance/payment-terms/:id
  */
 export const useUpdatePaymentTerm = () => {
   const queryClient = useQueryClient();
@@ -200,7 +200,7 @@ export const useUpdatePaymentTerm = () => {
       id: string;
       data: UpdatePaymentTermDto;
     }) => {
-      const response = await apiClient.patch<PaymentTerm>(
+      const response = await apiClient.put<PaymentTerm>(
         `/finance/payment-terms/${id}`,
         data,
       );

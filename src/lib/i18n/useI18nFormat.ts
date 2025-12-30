@@ -28,7 +28,7 @@ export function useI18nFormat() {
     (value: number, options?: Intl.NumberFormatOptions) => {
       return new Intl.NumberFormat(currentLocale, options).format(value);
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   // Currency formatting
@@ -36,7 +36,7 @@ export function useI18nFormat() {
     (
       value: number,
       currency: string = "USD",
-      options?: Intl.NumberFormatOptions
+      options?: Intl.NumberFormatOptions,
     ) => {
       return new Intl.NumberFormat(currentLocale, {
         style: "currency",
@@ -44,7 +44,7 @@ export function useI18nFormat() {
         ...options,
       }).format(value);
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   // Percentage formatting
@@ -57,14 +57,14 @@ export function useI18nFormat() {
         ...options,
       }).format(value);
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   // Date formatting
   const formatDate = useCallback(
     (
       date: Date | string | number,
-      options?: Intl.DateTimeFormatOptions
+      options?: Intl.DateTimeFormatOptions,
     ): string => {
       const dateObj = date instanceof Date ? date : new Date(date);
       return new Intl.DateTimeFormat(currentLocale, {
@@ -72,14 +72,14 @@ export function useI18nFormat() {
         ...options,
       }).format(dateObj);
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   // Time formatting
   const formatTime = useCallback(
     (
       date: Date | string | number,
-      options?: Intl.DateTimeFormatOptions
+      options?: Intl.DateTimeFormatOptions,
     ): string => {
       const dateObj = date instanceof Date ? date : new Date(date);
       return new Intl.DateTimeFormat(currentLocale, {
@@ -87,14 +87,14 @@ export function useI18nFormat() {
         ...options,
       }).format(dateObj);
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   // Date and Time formatting
   const formatDateTime = useCallback(
     (
       date: Date | string | number,
-      options?: Intl.DateTimeFormatOptions
+      options?: Intl.DateTimeFormatOptions,
     ): string => {
       const dateObj = date instanceof Date ? date : new Date(date);
       return new Intl.DateTimeFormat(currentLocale, {
@@ -103,7 +103,7 @@ export function useI18nFormat() {
         ...options,
       }).format(dateObj);
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   // Relative time formatting (e.g., "2 days ago", "in 3 hours")
@@ -112,7 +112,7 @@ export function useI18nFormat() {
       const dateObj = date instanceof Date ? date : new Date(date);
       const now = new Date();
       const diffInSeconds = Math.floor(
-        (dateObj.getTime() - now.getTime()) / 1000
+        (dateObj.getTime() - now.getTime()) / 1000,
       );
 
       const rtf = new Intl.RelativeTimeFormat(currentLocale, {
@@ -138,7 +138,7 @@ export function useI18nFormat() {
 
       return rtf.format(0, "second");
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   // List formatting (e.g., "A, B, and C")
@@ -150,7 +150,7 @@ export function useI18nFormat() {
         ...options,
       }).format(items);
     },
-    [currentLocale]
+    [currentLocale],
   );
 
   return {

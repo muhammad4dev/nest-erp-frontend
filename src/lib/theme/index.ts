@@ -67,7 +67,7 @@ export function createAppTheme({
       },
       spacing: 8,
     },
-    muiLocale
+    muiLocale,
   );
 }
 

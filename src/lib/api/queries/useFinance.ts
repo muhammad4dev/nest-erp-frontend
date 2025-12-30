@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 import type {
   Account,
@@ -7,11 +7,11 @@ import type {
   PaginatedResponse,
   TrialBalanceEntry,
   GeneralLedgerEntry,
-} from '@/types/api.types';
+} from "@/types/api.types";
 
-import { apiClient } from '../client';
-import { queryKeys } from '../query-keys';
-import type { JournalEntryListFilters } from '../query-keys';
+import { apiClient } from "../client";
+import { queryKeys } from "../query-keys";
+import type { JournalEntryListFilters } from "../query-keys";
 
 /**
  * Fetch chart of accounts
@@ -21,7 +21,7 @@ export const useAccounts = () => {
   return useQuery({
     queryKey: queryKeys.accounts.chartOfAccounts,
     queryFn: async () => {
-      const response = await apiClient.get<Account[]>('/finance/accounts');
+      const response = await apiClient.get<Account[]>("/finance/accounts");
       return response;
     },
   });
@@ -51,7 +51,7 @@ export const useJournalEntries = (filters?: JournalEntryListFilters) => {
     queryKey: queryKeys.journalEntries.list(filters),
     queryFn: async () => {
       const response = await apiClient.get<PaginatedResponse<JournalEntry>>(
-        '/finance/journal-entries',
+        "/finance/journal-entries",
         { params: filters },
       );
       return response;
@@ -85,7 +85,7 @@ export const useTrialBalance = (startDate?: string, endDate?: string) => {
     queryKey: queryKeys.financialReports.trialBalance(startDate, endDate),
     queryFn: async () => {
       const response = await apiClient.get<TrialBalanceEntry[]>(
-        '/finance/reports/trial-balance',
+        "/finance/reports/trial-balance",
         {
           params: { startDate, endDate },
         },
@@ -112,7 +112,7 @@ export const useGeneralLedger = (
     ),
     queryFn: async () => {
       const response = await apiClient.get<GeneralLedgerEntry[]>(
-        '/finance/reports/general-ledger',
+        "/finance/reports/general-ledger",
         {
           params: { accountId, startDate, endDate },
         },
@@ -131,7 +131,7 @@ export const usePaymentTerms = () => {
     queryKey: queryKeys.paymentTerms.list(),
     queryFn: async () => {
       const response = await apiClient.get<PaymentTerm[]>(
-        '/finance/payment-terms',
+        "/finance/payment-terms",
       );
       return response;
     },

@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
-import type { User, Role, Tenant, PaginatedResponse } from '@/types/api.types';
+import type { User, Role, Tenant, PaginatedResponse } from "@/types/api.types";
 
-import { apiClient } from '../client';
-import { queryKeys } from '../query-keys';
-import type { UserListFilters } from '../query-keys';
+import { apiClient } from "../client";
+import { queryKeys } from "../query-keys";
+import type { UserListFilters } from "../query-keys";
 
 /**
  * Fetch list of users with optional filters
@@ -14,7 +14,7 @@ export const useUsers = (filters?: UserListFilters) => {
   return useQuery({
     queryKey: queryKeys.users.list(filters),
     queryFn: async () => {
-      const response = await apiClient.get<PaginatedResponse<User>>('/users', {
+      const response = await apiClient.get<PaginatedResponse<User>>("/users", {
         params: filters,
       });
       return response;
@@ -45,7 +45,7 @@ export const useRoles = () => {
   return useQuery({
     queryKey: queryKeys.roles.all,
     queryFn: async () => {
-      const response = await apiClient.get<Role[]>('/roles');
+      const response = await apiClient.get<Role[]>("/roles");
       return response;
     },
   });
@@ -74,7 +74,7 @@ export const useTenants = () => {
   return useQuery({
     queryKey: queryKeys.tenants.all,
     queryFn: async () => {
-      const response = await apiClient.get<Tenant[]>('/tenants');
+      const response = await apiClient.get<Tenant[]>("/tenants");
       return response;
     },
   });

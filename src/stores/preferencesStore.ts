@@ -42,6 +42,6 @@ export const usePreferencesStore = create<PreferencesState>()(
         locale: state.locale,
         direction: state.direction,
       }),
-    }
-  )
+    },
+  ),
 );

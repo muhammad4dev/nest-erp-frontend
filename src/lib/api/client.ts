@@ -1,12 +1,12 @@
-import axios, { type AxiosError } from 'axios';
+import axios, { type AxiosError } from "axios";
 
-import { APP_CONFIG } from '@/config/constants';
-import { useAuthStore } from '@/stores/authStore';
+import { APP_CONFIG } from "@/config/constants";
+import { useAuthStore } from "@/stores/authStore";
 
 export const apiClient = axios.create({
   baseURL: APP_CONFIG.apiBaseUrl,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -21,7 +21,7 @@ apiClient.interceptors.request.use(
 
       // CRITICAL: Add tenant-id header for multi-tenant isolation
       if (user.tenantId) {
-        config.headers['x-tenant-id'] = user.tenantId;
+        config.headers["x-tenant-id"] = user.tenantId;
       }
     }
 
@@ -48,14 +48,14 @@ apiClient.interceptors.response.use(
 
       // For now, logout user on 401 (TODO: implement token refresh)
       logout();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/en/login';
+      if (typeof window !== "undefined") {
+        window.location.href = "/en/login";
       }
     }
 
     // Handle 403 Forbidden - insufficient permissions
     if (error.response?.status === 403) {
-      console.error('Access denied:', error.response.data);
+      console.error("Access denied:", error.response.data);
     }
 
     return Promise.reject(error);

@@ -20,7 +20,7 @@ const createCacheManager = () => {
 
   return {
     refreshCache: (
-      direction: "rtl" | "ltr"
+      direction: "rtl" | "ltr",
     ): { cache: EmotionCache; key: number } => {
       // Flush old cache to prevent style/memory leaks
       if (currentCache) {
@@ -48,7 +48,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Get cache for current direction - refreshes on direction change
   const { cache, key } = useMemo(
     () => cacheManager.refreshCache(direction),
-    [direction]
+    [direction],
   );
 
   // Update document direction and attributes
@@ -69,7 +69,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         themeMode: resolvedThemeMode,
         locale,
       }),
-    [direction, resolvedThemeMode, locale]
+    [direction, resolvedThemeMode, locale],
   );
 
   return (

@@ -1,4 +1,4 @@
-import type { BackendPermission } from './backend-permissions';
+import type { BackendPermission } from "./backend-permissions";
 
 export type UserRole = "GUEST" | "USER" | "MANAGER" | "ADMIN";
 

@@ -226,7 +226,7 @@ const dashboardRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "dashboard",
   component: lazyRouteComponent(() =>
-    import("./pages/DashboardPage").then((m) => ({ default: m.DashboardPage }))
+    import("./pages/DashboardPage").then((m) => ({ default: m.DashboardPage })),
   ),
   beforeLoad: () => RouteGuard({ roles: ["USER", "ADMIN"] }),
 });
@@ -284,7 +284,7 @@ All routes are lazy-loaded:
 const DashboardPage = lazyRouteComponent(() =>
   import("@/features/dashboard/pages/DashboardPage").then((m) => ({
     default: m.DashboardPage,
-  }))
+  })),
 );
 ```
 

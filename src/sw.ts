@@ -33,7 +33,7 @@ registerRoute(({ url }) => url.pathname.startsWith("/api/"), new NetworkOnly());
 // Also bypass any localhost API server (for development)
 registerRoute(
   ({ url }) => url.hostname === "localhost" && url.pathname.includes("/api/"),
-  new NetworkOnly()
+  new NetworkOnly(),
 );
 
 // Cache Google Fonts Stylesheet
@@ -50,7 +50,7 @@ registerRoute(
         maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
       }),
     ],
-  })
+  }),
 );
 
 // Cache Google Fonts Webfonts
@@ -67,7 +67,7 @@ registerRoute(
         maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
       }),
     ],
-  })
+  }),
 );
 
 // Handle Push Notifications
@@ -100,7 +100,7 @@ self.addEventListener("push", (event) => {
               },
             });
           });
-        })
+        }),
     );
 
     event.waitUntil(self.registration.showNotification(title, options));
@@ -129,6 +129,6 @@ self.addEventListener("notificationclick", (event) => {
         if (self.clients.openWindow) {
           return self.clients.openWindow(urlToOpen);
         }
-      })
+      }),
   );
 });

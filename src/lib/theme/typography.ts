@@ -13,7 +13,7 @@ const RTL_FONT_FAMILY =
  * Uses Inter for LTR (modern, highly legible) and IBM Plex Sans Arabic for RTL.
  */
 export function createTypography(
-  direction: "rtl" | "ltr"
+  direction: "rtl" | "ltr",
 ): ThemeOptions["typography"] {
   const fontFamily = direction === "rtl" ? RTL_FONT_FAMILY : LTR_FONT_FAMILY;
 

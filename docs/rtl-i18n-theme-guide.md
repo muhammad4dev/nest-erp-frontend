@@ -163,7 +163,7 @@ export function createAppTheme({ direction, themeMode, locale }) {
       typography,
       components: componentOverrides,
     },
-    muiLocale // ← Second argument for MUI translations
+    muiLocale, // ← Second argument for MUI translations
   );
 }
 ```
@@ -201,7 +201,9 @@ The app supports three theme modes:
 ```typescript
 export function useSystemTheme(): "light" | "dark" {
   const [systemTheme, setSystemTheme] = useState(() =>
-    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light",
   );
 
   useEffect(() => {
@@ -385,7 +387,7 @@ const changeLanguage = useCallback(
       replace: true,
     });
   },
-  [navigate, setLocale, setDirection]
+  [navigate, setLocale, setDirection],
 );
 ```
 

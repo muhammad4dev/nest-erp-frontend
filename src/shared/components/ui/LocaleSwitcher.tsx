@@ -35,7 +35,7 @@ export const LocaleSwitcher: React.FC = () => {
     (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
     },
-    []
+    [],
   );
 
   const handleClose = useCallback(() => {
@@ -63,7 +63,7 @@ export const LocaleSwitcher: React.FC = () => {
 
       handleClose();
     },
-    [navigate, handleClose, setLocale, setDirection]
+    [navigate, handleClose, setLocale, setDirection],
   );
 
   return (
