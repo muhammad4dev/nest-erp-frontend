@@ -1,10 +1,9 @@
+import type { BackendPermission } from './backend-permissions';
+
 export type UserRole = "GUEST" | "USER" | "MANAGER" | "ADMIN";
 
-export type Permission =
-  | "view:dashboard"
-  | "view:admin"
-  | "manage:users"
-  | "manage:settings";
+// Use backend permission format (action:resource)
+export type Permission = BackendPermission;
 
 export interface AuthUser {
   id: string;
@@ -13,6 +12,9 @@ export interface AuthUser {
   role: UserRole;
   permissions: Permission[];
   token: string;
+  // Tenant context (required for multi-tenant ERP)
+  tenantId: string;
+  tenantName: string;
 }
 
 export interface RBACMeta {
