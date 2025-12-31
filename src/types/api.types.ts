@@ -321,11 +321,24 @@ export interface StockMovement extends BaseEntity {
 
 export interface Partner extends BaseEntity {
   name: string;
-  type: "customer" | "vendor" | "both";
   email?: string;
   phone?: string;
-  address?: string;
+  partnerType?: "BUSINESS" | "PERSON";
+  isCustomer: boolean;
+  isVendor: boolean;
   taxId?: string;
+  address?: {
+    country?: string;
+    governate?: string;
+    regionCity?: string;
+    street?: string;
+    buildingNumber?: string;
+  };
+  contact?: {
+    email?: string;
+    phone?: string;
+    fax?: string;
+  };
   paymentTermId?: string;
   paymentTerm?: PaymentTerm;
 }
@@ -489,21 +502,47 @@ export interface UpdatePaymentTermDto {
 // Partner DTOs
 export interface CreatePartnerDto {
   name: string;
-  type: "customer" | "vendor" | "both";
   email?: string;
   phone?: string;
-  address?: string;
+  partnerType?: "BUSINESS" | "PERSON";
+  isCustomer?: boolean;
+  isVendor?: boolean;
   taxId?: string;
+  address?: {
+    country?: string;
+    governate?: string;
+    regionCity?: string;
+    street?: string;
+    buildingNumber?: string;
+  };
+  contact?: {
+    email?: string;
+    phone?: string;
+    fax?: string;
+  };
   paymentTermId?: string;
 }
 
 export interface UpdatePartnerDto {
   name?: string;
-  type?: "customer" | "vendor" | "both";
   email?: string;
   phone?: string;
-  address?: string;
+  partnerType?: "BUSINESS" | "PERSON";
+  isCustomer?: boolean;
+  isVendor?: boolean;
   taxId?: string;
+  address?: {
+    country?: string;
+    governate?: string;
+    regionCity?: string;
+    street?: string;
+    buildingNumber?: string;
+  };
+  contact?: {
+    email?: string;
+    phone?: string;
+    fax?: string;
+  };
   paymentTermId?: string;
 }
 

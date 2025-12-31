@@ -52,6 +52,13 @@ export const BACKEND_PERMISSIONS = {
     READ: "read:stock" as const,
     ADJUST: "adjust:stock" as const,
   },
+  // Partners (Customers & Vendors)
+  PARTNERS: {
+    CREATE: "create:partner" as const,
+    READ: "read:partner" as const,
+    UPDATE: "update:partner" as const,
+    DELETE: "delete:partner" as const,
+  },
   // Sales
   SALES: {
     CREATE: "create:sale" as const,
