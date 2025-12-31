@@ -90,6 +90,14 @@ export const AppLayout: React.FC = () => {
             </ListItemButton>
           </ListItem>
         </IfAllowed>
+
+        <IfAllowed roles={["ADMIN", "MANAGER"]}>
+          <ListItem disablePadding>
+            <ListItemButton component={AppLink} to="/$lang/app/finance">
+              <ListItemText primary={t("nav.finance")} />
+            </ListItemButton>
+          </ListItem>
+        </IfAllowed>
       </List>
     </Box>
   );

@@ -4,9 +4,13 @@ import type {
   Account,
   JournalEntry,
   PaymentTerm,
+  FiscalPeriod,
   CreateAccountDto,
   UpdateAccountDto,
   CreateJournalEntryDto,
+  CreateFiscalPeriodDto,
+  UpdateFiscalPeriodDto,
+  ClosePeriodDto,
   CreatePaymentTermDto,
   UpdatePaymentTermDto,
 } from "@/types/api.types";
@@ -49,7 +53,7 @@ export const useUpdateAccount = () => {
     }) => {
       const response = await apiClient.put<Account>(
         `/finance/accounts/${id}`,
-        data,
+        data
       );
       return response;
     },
@@ -90,7 +94,7 @@ export const useCreateJournalEntry = () => {
     mutationFn: async (data: CreateJournalEntryDto) => {
       const response = await apiClient.post<JournalEntry>(
         "/finance/journal-entries",
-        data,
+        data
       );
       return response;
     },
@@ -118,7 +122,7 @@ export const usePostJournalEntry = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await apiClient.post<JournalEntry>(
-        `/finance/journal-entries/${id}/post`,
+        `/finance/journal-entries/${id}/post`
       );
       return response;
     },
@@ -165,6 +169,95 @@ export const useDeleteJournalEntry = () => {
 };
 
 /**
+ * Create fiscal period
+ * POST /finance/periods
+ */
+export const useCreateFiscalPeriod = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: CreateFiscalPeriodDto) => {
+      const response = await apiClient.post<FiscalPeriod>(
+        "/finance/periods",
+        data
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fiscal-periods"] });
+    },
+  });
+};
+
+/**
+ * Update fiscal period
+ * PUT /finance/periods/:id
+ */
+export const useUpdateFiscalPeriod = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: UpdateFiscalPeriodDto;
+    }) => {
+      const response = await apiClient.put<FiscalPeriod>(
+        `/finance/periods/${id}`,
+        data
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fiscal-periods"] });
+    },
+  });
+};
+
+/**
+ * Close fiscal period
+ * POST /finance/periods/:id/close
+ */
+export const useCloseFiscalPeriod = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data?: ClosePeriodDto }) => {
+      const response = await apiClient.post<FiscalPeriod>(
+        `/finance/periods/${id}/close`,
+        data || {}
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fiscal-periods"] });
+    },
+  });
+};
+
+/**
+ * Reopen fiscal period
+ * POST /finance/periods/:id/reopen
+ */
+export const useReopenFiscalPeriod = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiClient.post<FiscalPeriod>(
+        `/finance/periods/${id}/reopen`
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fiscal-periods"] });
+    },
+  });
+};
+
+/**
  * Create payment term
  * POST /finance/payment-terms
  */
@@ -175,7 +268,7 @@ export const useCreatePaymentTerm = () => {
     mutationFn: async (data: CreatePaymentTermDto) => {
       const response = await apiClient.post<PaymentTerm>(
         "/finance/payment-terms",
-        data,
+        data
       );
       return response;
     },
@@ -202,7 +295,7 @@ export const useUpdatePaymentTerm = () => {
     }) => {
       const response = await apiClient.put<PaymentTerm>(
         `/finance/payment-terms/${id}`,
-        data,
+        data
       );
       return response;
     },

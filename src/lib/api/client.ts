@@ -25,6 +25,11 @@ let failedQueue: Array<{
 // bypassing the potentially stale Zustand state (which hydrates asynchronously)
 let freshAccessToken: string | null = null;
 
+// Generate UUID v4 for idempotency key
+const generateIdempotencyKey = (): string => {
+  return crypto.randomUUID();
+};
+
 const processQueue = (token: string | null, error?: Error) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -131,6 +136,11 @@ client.interceptors.request.use(
       if (user.tenantId) {
         config.headers["x-tenant-id"] = user.tenantId;
       }
+    }
+
+    // Add Idempotency-Key header for POST requests (required by backend)
+    if (config.method?.toLowerCase() === "post") {
+      config.headers["Idempotency-Key"] = generateIdempotencyKey();
     }
 
     return config;

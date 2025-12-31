@@ -29,7 +29,8 @@
     "reports": "التقارير",
     "analytics": "التحليلات",
     "roles": "الأدوار",
-    "permissions": "الأذونات"
+    "permissions": "الأذونات",
+    "finance": "المالية"
   },
   "common": {
     "loading": "جاري التحميل...",

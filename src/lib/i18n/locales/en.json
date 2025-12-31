@@ -29,7 +29,8 @@
     "reports": "Reports",
     "analytics": "Analytics",
     "roles": "Roles",
-    "permissions": "Permissions"
+    "permissions": "Permissions",
+    "finance": "Finance"
   },
   "common": {
     "loading": "Loading...",

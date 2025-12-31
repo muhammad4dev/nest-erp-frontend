@@ -69,52 +69,77 @@ export interface Tenant extends BaseEntity {
 
 // ========== FINANCE MODULE ==========
 
+export const AccountType = {
+  ASSET: "ASSET",
+  LIABILITY: "LIABILITY",
+  EQUITY: "EQUITY",
+  INCOME: "INCOME",
+  EXPENSE: "EXPENSE",
+} as const;
+
+export type AccountType = (typeof AccountType)[keyof typeof AccountType];
+
 export interface Account extends BaseEntity {
   code: string;
   name: string;
-  type: "asset" | "liability" | "equity" | "revenue" | "expense";
-  parentId?: string;
-  parent?: Account;
-  children?: Account[];
-  isActive: boolean;
+  type: AccountType;
+  isControlAccount: boolean;
+  parentAccountId?: string;
 }
 
+export const JournalStatus = {
+  DRAFT: "DRAFT",
+  POSTED: "POSTED",
+  VOIDED: "VOIDED",
+} as const;
+
+export type JournalStatus = (typeof JournalStatus)[keyof typeof JournalStatus];
 export interface JournalEntry extends BaseEntity {
-  reference: string;
+  reference?: string;
   transactionDate: string;
-  description?: string;
-  status: "DRAFT" | "POSTED";
-  lines: JournalLine[];
+  status: JournalStatus;
+  branchId?: string;
+  lines?: JournalLine[];
 }
 
 export interface JournalLine extends BaseEntity {
   journalEntryId: string;
-  journalEntry?: JournalEntry;
   accountId: string;
-  account?: Account;
   debit: number;
   credit: number;
   description?: string;
+  account?: Account;
+}
+
+export interface FiscalPeriod extends BaseEntity {
+  name: string;
+  startDate: string;
+  endDate: string;
+  isClosed: boolean;
 }
 
 export interface PaymentTerm extends BaseEntity {
   label: string;
   days: number;
+  discountPercent?: number;
+  discountDays?: number;
 }
 
 export interface TrialBalanceEntry {
   accountId: string;
   accountCode: string;
   accountName: string;
+  accountType: AccountType;
   debit: number;
   credit: number;
   balance: number;
 }
 
 export interface GeneralLedgerEntry {
-  date: Date;
-  journalEntryNumber: string;
-  description: string;
+  date: string;
+  reference: string;
+  description?: string;
+  accountCode: string;
   accountName: string;
   debit: number;
   credit: number;
@@ -262,23 +287,40 @@ export interface UpdateTenantDto {
 export interface CreateAccountDto {
   code: string;
   name: string;
-  type: "asset" | "liability" | "equity" | "revenue" | "expense";
-  parentId?: string;
+  type: AccountType;
+  isControlAccount?: boolean;
+  parentAccountId?: string;
 }
 
 export interface UpdateAccountDto {
   code?: string;
   name?: string;
-  type?: "asset" | "liability" | "equity" | "revenue" | "expense";
-  parentId?: string;
-  isActive?: boolean;
+  type?: AccountType;
+  isControlAccount?: boolean;
+  parentAccountId?: string;
+}
+
+// Fiscal Period DTOs
+export interface CreateFiscalPeriodDto {
+  name: string;
+  startDate: string;
+  endDate: string;
+}
+
+export interface UpdateFiscalPeriodDto {
+  name?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ClosePeriodDto {
+  force?: boolean;
 }
 
 // Journal Entry DTOs
 export interface CreateJournalEntryDto {
-  reference: string;
-  transactionDate: string;
-  description?: string;
+  description: string;
+  date: string;
   lines: CreateJournalLineDto[];
 }
 
@@ -287,6 +329,18 @@ export interface CreateJournalLineDto {
   debit: number;
   credit: number;
   description?: string;
+}
+
+// Report Query DTOs
+export interface TrialBalanceQueryDto {
+  periodId?: string;
+  accountType?: AccountType;
+}
+
+export interface GeneralLedgerQueryDto {
+  accountId?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 // Payment Term DTOs
