@@ -209,7 +209,7 @@ export interface ProductCategory extends BaseEntity {
 export interface ProductAttribute extends BaseEntity {
   name: string;
   code: string;
-  attributeType: AttributeType;
+  type: AttributeType;
   isRequired: boolean;
   isFilterable: boolean;
   isVariant: boolean;
@@ -642,4 +642,150 @@ export interface StockValuationQueryDto {
   locationId?: string;
   categoryId?: string;
   date?: string;
+}
+
+// Stock Receipt & Issue Types
+
+export type ReceiptSourceType =
+  | "PURCHASE"
+  | "PRODUCTION"
+  | "RETURN"
+  | "TRANSFER"
+  | "ADJUSTMENT";
+
+export type ReceiptStatus = "DRAFT" | "COMPLETED" | "CANCELLED";
+
+export type IssueType =
+  | "SALE"
+  | "PRODUCTION"
+  | "WRITEOFF"
+  | "TRANSFER"
+  | "ADJUSTMENT";
+
+export type IssueStatus = "DRAFT" | "COMPLETED" | "CANCELLED";
+
+export interface StockReceiptLine extends BaseEntity {
+  receiptId: string;
+  productId: string;
+  product?: Product;
+  variantId?: string;
+  quantity: number;
+  unitCost: number;
+  lineTotal: number;
+  batchNumber?: string;
+  expiryDate?: string;
+  serialNumbers?: string[];
+  notes?: string;
+}
+
+export interface StockReceipt extends BaseEntity {
+  receiptNumber: string;
+  receiptDate: string;
+  sourceType: ReceiptSourceType;
+  sourceReference?: string;
+  locationId: string;
+  location?: Location;
+  supplierId?: string;
+  status: ReceiptStatus;
+  totalQuantity: number;
+  totalValue: number;
+  notes?: string;
+  completedBy?: string;
+  completedAt?: string;
+  lines?: StockReceiptLine[];
+}
+
+export interface StockIssueLine extends BaseEntity {
+  issueId: string;
+  productId: string;
+  product?: Product;
+  variantId?: string;
+  quantity: number;
+  unitCost: number;
+  lineTotal: number;
+  batchNumber?: string;
+  serialNumbers?: string[];
+  notes?: string;
+}
+
+export interface StockIssue extends BaseEntity {
+  issueNumber: string;
+  issueDate: string;
+  issueType: IssueType;
+  sourceReference?: string;
+  locationId: string;
+  location?: Location;
+  customerId?: string;
+  status: IssueStatus;
+  totalQuantity: number;
+  totalValue: number;
+  notes?: string;
+  completedBy?: string;
+  completedAt?: string;
+  lines?: StockIssueLine[];
+}
+
+export interface CreateStockReceiptLineDto {
+  productId: string;
+  variantId?: string;
+  quantity: number;
+  unitCost: number;
+  batchNumber?: string;
+  expiryDate?: string;
+  serialNumbers?: string[];
+  notes?: string;
+}
+
+export interface CreateStockReceiptDto {
+  receiptDate: string;
+  sourceType: ReceiptSourceType;
+  sourceReference?: string;
+  locationId: string;
+  supplierId?: string;
+  notes?: string;
+  lines: CreateStockReceiptLineDto[];
+}
+
+export interface UpdateStockReceiptDto {
+  receiptDate?: string;
+  sourceType?: ReceiptSourceType;
+  sourceReference?: string;
+  locationId?: string;
+  supplierId?: string;
+  notes?: string;
+  totalQuantity?: number;
+  totalValue?: number;
+  lines?: CreateStockReceiptLineDto[];
+}
+
+export interface CreateStockIssueLineDto {
+  productId: string;
+  variantId?: string;
+  quantity: number;
+  unitCost: number;
+  batchNumber?: string;
+  serialNumbers?: string[];
+  notes?: string;
+}
+
+export interface CreateStockIssueDto {
+  issueDate: string;
+  issueType: IssueType;
+  sourceReference?: string;
+  locationId: string;
+  customerId?: string;
+  notes?: string;
+  lines: CreateStockIssueLineDto[];
+}
+
+export interface UpdateStockIssueDto {
+  issueDate?: string;
+  issueType?: IssueType;
+  sourceReference?: string;
+  locationId?: string;
+  customerId?: string;
+  notes?: string;
+  totalQuantity?: number;
+  totalValue?: number;
+  lines?: CreateStockIssueLineDto[];
 }

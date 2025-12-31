@@ -29,6 +29,19 @@ const productsListRoute = createRoute({
     RouteGuard({ permissions: ["read:product"] }, params),
 });
 
+// New Product Route (must come before parameterized route)
+const productNewRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: "products/new",
+  component: lazyRouteComponent(() =>
+    import("./pages/ProductFormPage").then((m) => ({
+      default: m.ProductFormPage,
+    }))
+  ),
+  beforeLoad: async ({ params }) =>
+    RouteGuard({ permissions: ["create:product"] }, params),
+});
+
 // Product Detail/Edit Route
 const productDetailRoute = createRoute({
   getParentRoute: () => appRoute,
@@ -40,19 +53,6 @@ const productDetailRoute = createRoute({
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:product"] }, params),
-});
-
-// New Product Route
-const productNewRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: "products/new",
-  component: lazyRouteComponent(() =>
-    import("./pages/ProductFormPage").then((m) => ({
-      default: m.ProductFormPage,
-    }))
-  ),
-  beforeLoad: async ({ params }) =>
-    RouteGuard({ permissions: ["create:product"] }, params),
 });
 
 // Categories Route
@@ -97,8 +97,8 @@ const stockRoute = createRoute({
 export const productsRoutes = [
   productsIndexRoute,
   productsListRoute,
-  productDetailRoute,
   productNewRoute,
+  productDetailRoute,
   categoriesRoute,
   attributesRoute,
   stockRoute,

@@ -90,16 +90,20 @@ export function ProductsListPage() {
       headerName: "Sales Price",
       width: 120,
       type: "number",
-      valueFormatter: (value: number | undefined) =>
-        `$${value?.toFixed(2) || "0.00"}`,
+      valueFormatter: (value) => {
+        const numValue = typeof value === "number" ? value : parseFloat(value);
+        return `$${!isNaN(numValue) ? numValue.toFixed(2) : "0.00"}`;
+      },
     },
     {
       field: "costPrice",
       headerName: "Cost",
       width: 100,
       type: "number",
-      valueFormatter: (value: number | undefined) =>
-        `$${value?.toFixed(2) || "0.00"}`,
+      valueFormatter: (value) => {
+        const numValue = typeof value === "number" ? value : parseFloat(value);
+        return `$${!isNaN(numValue) ? numValue.toFixed(2) : "0.00"}`;
+      },
     },
     {
       field: "isActive",

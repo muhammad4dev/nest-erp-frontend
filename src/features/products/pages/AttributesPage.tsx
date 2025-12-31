@@ -74,7 +74,7 @@ export function AttributesPage() {
   const [filterTab, setFilterTab] = useState(0);
 
   // API
-  const { data: attributes = [], isLoading } = useProductAttributes();
+  const { data: attributes = [], isLoading, error } = useProductAttributes();
   const createMutation = useCreateProductAttribute();
   const updateMutation = useUpdateProductAttribute();
   const deleteMutation = useDeleteProductAttribute();
@@ -86,7 +86,7 @@ export function AttributesPage() {
       data: {
         name: "",
         code: "",
-        attributeType: "TEXT",
+        type: "TEXT",
         isRequired: false,
         isFilterable: false,
         isVariant: false,
@@ -103,7 +103,7 @@ export function AttributesPage() {
         id: attribute.id,
         name: attribute.name,
         code: attribute.code,
-        attributeType: attribute.attributeType,
+        type: attribute.type,
         isRequired: attribute.isRequired,
         isFilterable: attribute.isFilterable,
         isVariant: attribute.isVariant,
@@ -142,7 +142,7 @@ export function AttributesPage() {
         const createDto: CreateProductAttributeDto = {
           name: formState.data.name,
           code: formState.data.code || "",
-          type: formState.data.attributeType || "TEXT",
+          type: formState.data.type || "TEXT",
           isRequired: formState.data.isRequired ?? false,
           isFilterable: formState.data.isFilterable ?? false,
           isVariant: formState.data.isVariant ?? false,
@@ -154,7 +154,7 @@ export function AttributesPage() {
         const updateDto: UpdateProductAttributeDto = {
           name: formState.data.name,
           code: formState.data.code,
-          type: formState.data.attributeType,
+          type: formState.data.type,
           isRequired: formState.data.isRequired,
           isFilterable: formState.data.isFilterable,
           isVariant: formState.data.isVariant,
@@ -206,6 +206,17 @@ export function AttributesPage() {
     );
   }
 
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Alert severity="error">
+          Failed to load attributes:{" "}
+          {error instanceof Error ? error.message : "Unknown error"}
+        </Alert>
+      </Container>
+    );
+  }
+
   // Filter attributes based on tab
   const filteredAttributes =
     filterTab === 0
@@ -217,7 +228,7 @@ export function AttributesPage() {
   // Group by type
   const groupedByType = ATTRIBUTE_TYPES.reduce(
     (acc, type) => {
-      acc[type] = filteredAttributes.filter((a) => a.attributeType === type);
+      acc[type] = filteredAttributes.filter((a) => a.type === type);
       return acc;
     },
     {} as Record<AttributeType, ProductAttribute[]>
@@ -346,46 +357,44 @@ export function AttributesPage() {
       </Box>
 
       <Card>
-        <Box>
-          <Tabs
-            value={filterTab}
-            onChange={(_, value) => setFilterTab(value)}
-            sx={{ borderBottom: 1, borderColor: "divider" }}
-          >
-            <Tab label={`All (${attributes.length})`} />
-            <Tab
-              label={`Variants (${attributes.filter((a) => a.isVariant).length})`}
-            />
-            <Tab
-              label={`Filterable (${attributes.filter((a) => a.isFilterable).length})`}
-            />
-          </Tabs>
+        <Tabs
+          value={filterTab}
+          onChange={(_, value) => setFilterTab(value)}
+          sx={{ borderBottom: 1, borderColor: "divider" }}
+        >
+          <Tab label={`All (${attributes.length})`} />
+          <Tab
+            label={`Variants (${attributes.filter((a) => a.isVariant).length})`}
+          />
+          <Tab
+            label={`Filterable (${attributes.filter((a) => a.isFilterable).length})`}
+          />
+        </Tabs>
 
-          <CardContent>
-            {filteredAttributes.length === 0 ? (
-              <Alert severity="info">
-                No attributes found in this category. Create one to get started.
-              </Alert>
-            ) : (
-              <Box>
-                {ATTRIBUTE_TYPES.map((type) => {
-                  const typeAttributes = groupedByType[type];
-                  if (typeAttributes.length === 0) return null;
+        <CardContent sx={{ minHeight: "400px", pt: 3 }}>
+          {filteredAttributes.length === 0 ? (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              No attributes found in this category. Create one to get started.
+            </Alert>
+          ) : (
+            <Box>
+              {ATTRIBUTE_TYPES.map((type) => {
+                const typeAttributes = groupedByType[type];
+                if (typeAttributes.length === 0) return null;
 
-                  return (
-                    <Box key={type} sx={{ mb: 3 }}>
-                      <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                        {type}
-                      </Typography>
-                      <Divider sx={{ mb: 2 }} />
-                      {typeAttributes.map((attr) => renderAttributeCard(attr))}
-                    </Box>
-                  );
-                })}
-              </Box>
-            )}
-          </CardContent>
-        </Box>
+                return (
+                  <Box key={type} sx={{ mb: 3 }}>
+                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                      {type}
+                    </Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    {typeAttributes.map((attr) => renderAttributeCard(attr))}
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+        </CardContent>
       </Card>
 
       {/* Attribute Form Dialog */}
@@ -415,10 +424,8 @@ export function AttributesPage() {
             />
             <Select
               fullWidth
-              value={formState.data.attributeType || "TEXT"}
-              onChange={(e) =>
-                handleFormChange("attributeType", e.target.value)
-              }
+              value={formState.data.type || "TEXT"}
+              onChange={(e) => handleFormChange("type", e.target.value)}
             >
               {ATTRIBUTE_TYPES.map((type) => (
                 <MenuItem key={type} value={type}>
@@ -427,8 +434,8 @@ export function AttributesPage() {
               ))}
             </Select>
 
-            {(formState.data.attributeType === "SELECT" ||
-              formState.data.attributeType === "MULTI_SELECT") && (
+            {(formState.data.type === "SELECT" ||
+              formState.data.type === "MULTI_SELECT") && (
               <TextField
                 fullWidth
                 label="Options (comma-separated)"

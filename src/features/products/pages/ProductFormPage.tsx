@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useParams } from "@tanstack/react-router";
+import { useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import {
@@ -37,7 +37,13 @@ import type {
 } from "@/types/api.types";
 
 export function ProductFormPage() {
-  const { productId } = useParams({ from: "/$lang/app/products/$productId" });
+  const location = useLocation();
+  // Extract productId from the pathname
+  const pathParts = location.pathname.split("/");
+  const productId = pathParts.includes("new")
+    ? undefined
+    : pathParts[pathParts.length - 1];
+
   const navigate = useAppNavigate();
   const { showNotification } = useNotification();
 

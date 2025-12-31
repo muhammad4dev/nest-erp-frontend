@@ -106,6 +106,14 @@ export const AppLayout: React.FC = () => {
             </ListItemButton>
           </ListItem>
         </IfAllowed>
+
+        <IfAllowed permissions={["read:stock"]}>
+          <ListItem disablePadding>
+            <ListItemButton component={AppLink} to="/$lang/app/inventory">
+              <ListItemText primary={t("nav.inventory")} />
+            </ListItemButton>
+          </ListItem>
+        </IfAllowed>
       </List>
     </Box>
   );
