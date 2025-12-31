@@ -98,6 +98,14 @@ export const AppLayout: React.FC = () => {
             </ListItemButton>
           </ListItem>
         </IfAllowed>
+
+        <IfAllowed permissions={["read:product"]}>
+          <ListItem disablePadding>
+            <ListItemButton component={AppLink} to="/$lang/app/products">
+              <ListItemText primary={t("nav.products")} />
+            </ListItemButton>
+          </ListItem>
+        </IfAllowed>
       </List>
     </Box>
   );

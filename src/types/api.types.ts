@@ -146,25 +146,157 @@ export interface GeneralLedgerEntry {
   balance: number;
 }
 
-// ========== INVENTORY MODULE ==========
+// ========== PRODUCTS & INVENTORY MODULE ==========
+
+export const ProductType = {
+  GOODS: "GOODS",
+  SERVICE: "SERVICE",
+  CONSUMABLE: "CONSUMABLE",
+  DIGITAL: "DIGITAL",
+} as const;
+
+export type ProductType = (typeof ProductType)[keyof typeof ProductType];
+
+export const AttributeType = {
+  TEXT: "TEXT",
+  NUMBER: "NUMBER",
+  BOOLEAN: "BOOLEAN",
+  SELECT: "SELECT",
+  MULTI_SELECT: "MULTI_SELECT",
+  DATE: "DATE",
+  COLOR: "COLOR",
+} as const;
+
+export type AttributeType = (typeof AttributeType)[keyof typeof AttributeType];
 
 export interface Product extends BaseEntity {
-  name: string;
   sku: string;
+  name: string;
   description?: string;
-  type: "PRODUCT" | "SERVICE";
-  category?: string;
-  unitPrice: number;
-  costPrice: number;
+  productType: ProductType;
+  categoryId?: string;
+  category?: ProductCategory;
   uomId?: string;
-  uom?: UnitOfMeasure;
+  uom?: UomUnit;
+  salesPrice: number;
+  costPrice: number;
+  taxCode?: string;
+  barcode?: string;
+  weight?: number;
+  canBeSold: boolean;
+  canBePurchased: boolean;
+  trackInventory: boolean;
   isActive: boolean;
+  hasVariants: boolean;
+  imageUrl?: string;
+  metadata?: Record<string, unknown>;
+  translations?: ProductTranslation[];
+  attributeValues?: ProductAttributeValue[];
+  variants?: ProductVariant[];
+}
+
+export interface ProductCategory extends BaseEntity {
+  name: string;
+  code: string;
+  description?: string;
+  parentId?: string;
+  parent?: ProductCategory;
+  children?: ProductCategory[];
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface ProductAttribute extends BaseEntity {
+  name: string;
+  code: string;
+  attributeType: AttributeType;
+  isRequired: boolean;
+  isFilterable: boolean;
+  isVariant: boolean;
+  options?: string[];
+  sortOrder: number;
+}
+
+export interface ProductAttributeValue extends BaseEntity {
+  productId: string;
+  product?: Product;
+  attributeId: string;
+  attribute?: ProductAttribute;
+  valueText?: string;
+  valueNumber?: number;
+  valueBoolean?: boolean;
+  valueDate?: string;
+  valueSelect?: number[];
+}
+
+export interface ProductVariant extends BaseEntity {
+  productId: string;
+  product?: Product;
+  sku: string;
+  name: string;
+  attributes: Record<string, string>;
+  salesPrice?: number;
+  costPrice?: number;
+  barcode?: string;
+  weight?: number;
+  isActive: boolean;
+  imageUrl?: string;
+}
+
+export interface ProductTranslation extends BaseEntity {
+  productId: string;
+  product?: Product;
+  locale: string;
+  name: string;
+  description?: string;
+}
+
+export interface UomUnit extends BaseEntity {
+  name: string;
+  categoryId?: string;
+  ratio: number;
+  isReference: boolean;
+  etaCode?: string;
 }
 
 export interface UnitOfMeasure extends BaseEntity {
   name: string;
   symbol: string;
   category: string;
+}
+
+export interface StockLocation extends BaseEntity {
+  name: string;
+  code: string;
+  locationType: string;
+  parentId?: string;
+  parent?: StockLocation;
+  children?: StockLocation[];
+  isActive: boolean;
+}
+
+export interface StockQuant extends BaseEntity {
+  productId: string;
+  product?: Product;
+  variantId?: string;
+  variant?: ProductVariant;
+  locationId: string;
+  location?: StockLocation;
+  quantity: number;
+  reservedQuantity: number;
+  availableQuantity: number;
+}
+
+export interface StockLedgerEntry extends BaseEntity {
+  productId: string;
+  product?: Product;
+  variantId?: string;
+  locationId: string;
+  location?: StockLocation;
+  quantity: number;
+  reference?: string;
+  movementType: string;
+  unitCost?: number;
 }
 
 export interface Location extends BaseEntity {
@@ -354,30 +486,6 @@ export interface UpdatePaymentTermDto {
   days?: number;
 }
 
-// Product DTOs
-export interface CreateProductDto {
-  name: string;
-  sku: string;
-  description?: string;
-  type: "PRODUCT" | "SERVICE";
-  category?: string;
-  unitPrice: number;
-  costPrice: number;
-  uomId?: string;
-}
-
-export interface UpdateProductDto {
-  name?: string;
-  sku?: string;
-  description?: string;
-  type?: "PRODUCT" | "SERVICE";
-  category?: string;
-  unitPrice?: number;
-  costPrice?: number;
-  uomId?: string;
-  isActive?: boolean;
-}
-
 // Partner DTOs
 export interface CreatePartnerDto {
   name: string;
@@ -397,4 +505,141 @@ export interface UpdatePartnerDto {
   address?: string;
   taxId?: string;
   paymentTermId?: string;
+}
+
+// Product DTOs
+export interface CreateProductDto {
+  sku: string;
+  name: string;
+  description?: string;
+  productType: ProductType;
+  categoryId?: string;
+  uomId?: string;
+  salesPrice: number;
+  costPrice: number;
+  taxCode?: string;
+  barcode?: string;
+  weight?: number;
+  canBeSold?: boolean;
+  canBePurchased?: boolean;
+  trackInventory?: boolean;
+  imageUrl?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface UpdateProductDto {
+  sku?: string;
+  name?: string;
+  description?: string;
+  productType?: ProductType;
+  categoryId?: string;
+  uomId?: string;
+  salesPrice?: number;
+  costPrice?: number;
+  taxCode?: string;
+  barcode?: string;
+  weight?: number;
+  canBeSold?: boolean;
+  canBePurchased?: boolean;
+  trackInventory?: boolean;
+  isActive?: boolean;
+  imageUrl?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface CreateProductCategoryDto {
+  name: string;
+  code: string;
+  description?: string;
+  parentId?: string;
+  sortOrder?: number;
+}
+
+export interface UpdateProductCategoryDto {
+  name?: string;
+  code?: string;
+  description?: string;
+  parentId?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
+export interface CreateProductAttributeDto {
+  name: string;
+  code: string;
+  type: AttributeType;
+  isRequired?: boolean;
+  isFilterable?: boolean;
+  isVariant?: boolean;
+  options?: string[];
+  sortOrder?: number;
+}
+
+export interface UpdateProductAttributeDto {
+  name?: string;
+  code?: string;
+  type?: AttributeType;
+  isRequired?: boolean;
+  isFilterable?: boolean;
+  isVariant?: boolean;
+  options?: string[];
+  sortOrder?: number;
+}
+
+export interface CreateProductVariantDto {
+  sku: string;
+  name: string;
+  attributes: Record<string, string>;
+  salesPrice?: number;
+  costPrice?: number;
+  barcode?: string;
+  weight?: number;
+  imageUrl?: string;
+}
+
+export interface UpdateProductVariantDto {
+  sku?: string;
+  name?: string;
+  attributes?: Record<string, string>;
+  salesPrice?: number;
+  costPrice?: number;
+  barcode?: string;
+  weight?: number;
+  isActive?: boolean;
+  imageUrl?: string;
+}
+
+export interface GenerateVariantsDto {
+  attributeIds: string[];
+}
+
+export interface StockTransferDto {
+  productId: string;
+  variantId?: string;
+  fromLocationId: string;
+  toLocationId: string;
+  quantity: number;
+  reference?: string;
+}
+
+export interface StockAdjustmentDto {
+  productId: string;
+  variantId?: string;
+  locationId: string;
+  quantity: number;
+  reason?: string;
+  reference?: string;
+}
+
+export interface StockLedgerQueryDto {
+  productId?: string;
+  locationId?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface StockValuationQueryDto {
+  locationId?: string;
+  categoryId?: string;
+  date?: string;
 }

@@ -30,7 +30,8 @@
     "analytics": "التحليلات",
     "roles": "الأدوار",
     "permissions": "الأذونات",
-    "finance": "المالية"
+    "finance": "المالية",
+    "products": "المنتجات"
   },
   "common": {
     "loading": "جاري التحميل...",

@@ -30,7 +30,8 @@
     "analytics": "Analytics",
     "roles": "Roles",
     "permissions": "Permissions",
-    "finance": "Finance"
+    "finance": "Finance",
+    "products": "Products"
   },
   "common": {
     "loading": "Loading...",
