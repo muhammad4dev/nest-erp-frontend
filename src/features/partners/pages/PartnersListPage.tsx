@@ -34,7 +34,7 @@ export function PartnersListPage() {
   };
 
   const getPartnerTypeColor = (
-    partner: Partner
+    partner: Partner,
   ): "success" | "warning" | "info" => {
     if (partner.isCustomer && partner.isVendor) return "info";
     if (partner.isCustomer) return "success";

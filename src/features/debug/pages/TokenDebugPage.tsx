@@ -49,11 +49,11 @@ export const TokenDebugPage = () => {
           `Current time: ${now.toLocaleString()}\n` +
           `Expired: ${isExpired}\n` +
           `Time left: ${isExpired ? "EXPIRED" : `${timeLeft}s`}\n\n` +
-          `Payload: ${JSON.stringify(payload, null, 2)}`
+          `Payload: ${JSON.stringify(payload, null, 2)}`,
       );
     } catch (err) {
       setError(
-        `Failed to decode token: ${err instanceof Error ? err.message : String(err)}`
+        `Failed to decode token: ${err instanceof Error ? err.message : String(err)}`,
       );
     }
   };
@@ -87,7 +87,7 @@ export const TokenDebugPage = () => {
                   user?.refreshToken?.substring(0, 50) + "...",
               },
               null,
-              2
+              2,
             )}
           </Typography>
         </CardContent>

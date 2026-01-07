@@ -27,7 +27,8 @@ export const useMe = () => {
       const permissions =
         userResponse.roles?.flatMap(
           (role) =>
-            role.permissions?.map((p) => `${p.action}:${p.resource}`) || []
+            (role.permissions ?? []).map((p) => `${p.action}:${p.resource}`) ||
+            []
         ) || [];
 
       // Determine primary role (use highest privilege role)

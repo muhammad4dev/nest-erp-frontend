@@ -10,7 +10,7 @@ const partnersIndexRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/PartnersIndexPage").then((m) => ({
       default: m.PartnersIndexPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:partner"] }, params),
@@ -23,7 +23,7 @@ const partnersListRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/PartnersListPage").then((m) => ({
       default: m.PartnersListPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:partner"] }, params),
@@ -36,7 +36,7 @@ const partnerNewRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/PartnerFormPage").then((m) => ({
       default: m.PartnerFormPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["create:partner"] }, params),
@@ -49,7 +49,7 @@ const partnerDetailRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/PartnerFormPage").then((m) => ({
       default: m.PartnerFormPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:partner"] }, params),

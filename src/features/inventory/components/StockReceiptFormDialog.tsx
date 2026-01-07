@@ -1,3 +1,4 @@
+import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
@@ -18,19 +19,18 @@ import {
   Autocomplete,
   Typography,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useProducts } from "@/lib/api/queries/useProducts";
-import { useStockLocations } from "@/lib/api/queries/useProducts";
 import {
   useCreateStockReceipt,
   useUpdateStockReceipt,
 } from "@/lib/api/mutations/useStockReceipts";
+import { useProducts } from "@/lib/api/queries/useProducts";
+import { useStockLocations } from "@/lib/api/queries/useProducts";
 import type {
   CreateStockReceiptDto,
   UpdateStockReceiptDto,
@@ -149,7 +149,7 @@ export const StockReceiptFormDialog: React.FC<StockReceiptFormDialogProps> = ({
   const handleLineChange = (
     index: number,
     field: keyof LineItemForm,
-    value: string | number
+    value: string | number,
   ) => {
     const newLines = [...lines];
     newLines[index] = {
@@ -183,11 +183,11 @@ export const StockReceiptFormDialog: React.FC<StockReceiptFormDialogProps> = ({
   const calculateTotals = () => {
     const totalQuantity = lines.reduce(
       (sum, line) => sum + Number(line.quantity || 0),
-      0
+      0,
     );
     const totalValue = lines.reduce(
       (sum, line) => sum + Number(line.lineTotal || 0),
-      0
+      0,
     );
     return { totalQuantity, totalValue };
   };
@@ -213,12 +213,12 @@ export const StockReceiptFormDialog: React.FC<StockReceiptFormDialogProps> = ({
         lines: baseLines,
         totalQuantity: lines.reduce(
           (sum, line) => sum + Number(line.quantity || 0),
-          0
+          0,
         ),
         totalValue: lines.reduce(
           (sum, line) =>
             sum + Number(line.quantity || 0) * Number(line.unitCost || 0),
-          0
+          0,
         ),
       };
 
@@ -421,7 +421,7 @@ export const StockReceiptFormDialog: React.FC<StockReceiptFormDialogProps> = ({
                             handleLineChange(
                               index,
                               "quantity",
-                              Number(e.target.value)
+                              Number(e.target.value),
                             )
                           }
                           size="small"
@@ -438,7 +438,7 @@ export const StockReceiptFormDialog: React.FC<StockReceiptFormDialogProps> = ({
                             handleLineChange(
                               index,
                               "unitCost",
-                              Number(e.target.value)
+                              Number(e.target.value),
                             )
                           }
                           size="small"
@@ -457,7 +457,7 @@ export const StockReceiptFormDialog: React.FC<StockReceiptFormDialogProps> = ({
                             handleLineChange(
                               index,
                               "batchNumber",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           size="small"
@@ -472,7 +472,7 @@ export const StockReceiptFormDialog: React.FC<StockReceiptFormDialogProps> = ({
                             handleLineChange(
                               index,
                               "expiryDate",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           size="small"

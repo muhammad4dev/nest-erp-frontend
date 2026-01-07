@@ -828,3 +828,121 @@ export interface UpdateStockIssueDto {
   totalValue?: number;
   lines?: CreateStockIssueLineDto[];
 }
+
+// ========== PROCUREMENT MODULE ==========
+
+export const PurchaseOrderStatus = {
+  RFQ: "RFQ",
+  RFQ_SENT: "RFQ_SENT",
+  TO_APPROVE: "TO_APPROVE",
+  PURCHASE_ORDER: "PURCHASE_ORDER",
+  RECEIVED: "RECEIVED",
+  BILLED: "BILLED",
+  LOCKED: "LOCKED",
+  CANCELLED: "CANCELLED",
+} as const;
+
+export type PurchaseOrderStatus =
+  (typeof PurchaseOrderStatus)[keyof typeof PurchaseOrderStatus];
+
+export const VendorBillType = {
+  BILL: "BILL",
+  CREDIT_NOTE: "CREDIT_NOTE",
+  DEBIT_NOTE: "DEBIT_NOTE",
+} as const;
+
+export type VendorBillType =
+  (typeof VendorBillType)[keyof typeof VendorBillType];
+
+export const VendorBillStatus = {
+  DRAFT: "DRAFT",
+  POSTED: "POSTED",
+  PAID: "PAID",
+  CANCELLED: "CANCELLED",
+} as const;
+
+export type VendorBillStatus =
+  (typeof VendorBillStatus)[keyof typeof VendorBillStatus];
+
+export interface PurchaseOrder extends BaseEntity {
+  orderNumber: string;
+  partnerId: string;
+  partner?: Partner;
+  orderDate: string;
+  status: PurchaseOrderStatus;
+  totalAmount: number;
+  lines?: PurchaseOrderLine[];
+}
+
+export interface PurchaseOrderLine extends BaseEntity {
+  orderId: string;
+  order?: PurchaseOrder;
+  productId: string;
+  product?: Product;
+  quantity: number;
+  uomId?: string;
+  uom?: UomUnit;
+  unitPrice: number;
+  subtotal: number;
+}
+
+export interface VendorBill extends BaseEntity {
+  billReference: string;
+  partnerId: string;
+  partner?: Partner;
+  purchaseOrderId?: string;
+  purchaseOrder?: PurchaseOrder;
+  originalBillId?: string;
+  originalBill?: VendorBill;
+  type: VendorBillType;
+  status: VendorBillStatus;
+  receivedAt?: string;
+  dueDate?: string;
+  totalDiscountAmount: number;
+  netAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  amountPaid: number;
+  paymentTermId?: string;
+  paymentTerm?: PaymentTerm;
+  notes?: string;
+  lines?: VendorBillLine[];
+  balanceDue?: number;
+  isOverdue?: boolean;
+}
+
+export interface VendorBillLine extends BaseEntity {
+  vendorBillId: string;
+  bill?: VendorBill;
+  productId: string;
+  product?: Product;
+  description?: string;
+  quantity: number;
+  unitPrice: number;
+  discountAmount: number;
+  taxAmount: number;
+  lineTotal: number;
+}
+
+export interface APAgingEntry {
+  partnerId: string;
+  partnerName: string;
+  currentAmount: number;
+  overdue1To30: number;
+  overdue31To60: number;
+  overdue61To90: number;
+  overdue90Plus: number;
+  totalDue: number;
+}
+
+export interface CreatePurchaseOrderLineDto {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface CreateRfqDto {
+  partnerId: string;
+  orderDate: string;
+  lines: CreatePurchaseOrderLineDto[];
+}

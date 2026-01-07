@@ -68,7 +68,7 @@ export const useStockReceipt = (id?: string) => {
     queryKey: receiptsQueryKeys.detail(id || ""),
     queryFn: async () => {
       const response = await apiClient.get<StockReceipt>(
-        `/inventory/receipts/${id}`
+        `/inventory/receipts/${id}`,
       );
       return response;
     },
@@ -112,7 +112,7 @@ export const useStockIssue = (id?: string) => {
     queryKey: issuesQueryKeys.detail(id || ""),
     queryFn: async () => {
       const response = await apiClient.get<StockIssue>(
-        `/inventory/issues/${id}`
+        `/inventory/issues/${id}`,
       );
       return response;
     },

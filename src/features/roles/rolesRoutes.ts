@@ -9,7 +9,7 @@ const rolesListRoute = createRoute({
   getParentRoute: () => appRoute,
   path: "roles",
   component: lazyRouteComponent(() =>
-    import("./pages/RolesListPage").then((m) => ({ default: m.RolesListPage }))
+    import("./pages/RolesListPage").then((m) => ({ default: m.RolesListPage })),
   ),
   beforeLoad: ({ params }) => RouteGuard({ roles: ["ADMIN"] }, params),
 });

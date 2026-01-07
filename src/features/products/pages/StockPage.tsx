@@ -353,7 +353,8 @@ export function StockPage() {
 
         {rootLocations.length === 0 ? (
           <Alert severity="info">
-            No locations exist. Click "Create Location" to add the first one.
+            No locations exist. Click &quot;Create Location&quot; to add the
+            first one.
           </Alert>
         ) : (
           <Card>

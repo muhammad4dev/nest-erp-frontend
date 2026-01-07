@@ -76,15 +76,17 @@ export const useProducts = () => {
  * GET /inventory/products/:id
  */
 export const useProduct = (id?: string) => {
+  const isValidId = Boolean(id) && id !== "list" && id !== "new";
+
   return useQuery({
     queryKey: productsQueryKeys.detail(id || ""),
     queryFn: async () => {
       const response = await apiClient.get<Product>(
-        `/inventory/products/${id}`
+        `/inventory/products/${id}`,
       );
       return response;
     },
-    enabled: Boolean(id),
+    enabled: isValidId,
   });
 };
 
@@ -97,7 +99,7 @@ export const useProductCategories = () => {
     queryKey: productsQueryKeys.categories.all,
     queryFn: async () => {
       const response = await apiClient.get<ProductCategory[]>(
-        "/products/categories"
+        "/products/categories",
       );
       return response;
     },
@@ -113,7 +115,7 @@ export const useCategoryTree = () => {
     queryKey: productsQueryKeys.categories.tree(),
     queryFn: async () => {
       const response = await apiClient.get<ProductCategory[]>(
-        "/products/categories/tree"
+        "/products/categories/tree",
       );
       return response;
     },
@@ -129,7 +131,7 @@ export const useProductCategory = (id?: string) => {
     queryKey: productsQueryKeys.categories.detail(id || ""),
     queryFn: async () => {
       const response = await apiClient.get<ProductCategory>(
-        `/products/categories/${id}`
+        `/products/categories/${id}`,
       );
       return response;
     },
@@ -146,7 +148,7 @@ export const useProductAttributes = () => {
     queryKey: productsQueryKeys.attributes.all,
     queryFn: async () => {
       const response = await apiClient.get<ProductAttribute[]>(
-        "/products/attributes"
+        "/products/attributes",
       );
       return response;
     },
@@ -162,7 +164,7 @@ export const useFilterableAttributes = () => {
     queryKey: productsQueryKeys.attributes.filterable(),
     queryFn: async () => {
       const response = await apiClient.get<ProductAttribute[]>(
-        "/products/attributes/filterable"
+        "/products/attributes/filterable",
       );
       return response;
     },
@@ -178,7 +180,7 @@ export const useVariantAttributes = () => {
     queryKey: productsQueryKeys.attributes.variant(),
     queryFn: async () => {
       const response = await apiClient.get<ProductAttribute[]>(
-        "/products/attributes/variant"
+        "/products/attributes/variant",
       );
       return response;
     },
@@ -194,7 +196,7 @@ export const useProductAttribute = (id?: string) => {
     queryKey: productsQueryKeys.attributes.detail(id || ""),
     queryFn: async () => {
       const response = await apiClient.get<ProductAttribute>(
-        `/products/attributes/${id}`
+        `/products/attributes/${id}`,
       );
       return response;
     },
@@ -211,7 +213,7 @@ export const useProductVariants = (productId?: string) => {
     queryKey: productsQueryKeys.variants.all(productId || ""),
     queryFn: async () => {
       const response = await apiClient.get<ProductVariant[]>(
-        `/products/${productId}/variants`
+        `/products/${productId}/variants`,
       );
       return response;
     },
@@ -227,11 +229,11 @@ export const useProductVariant = (productId?: string, variantId?: string) => {
   return useQuery({
     queryKey: productsQueryKeys.variants.detail(
       productId || "",
-      variantId || ""
+      variantId || "",
     ),
     queryFn: async () => {
       const response = await apiClient.get<ProductVariant>(
-        `/products/${productId}/variants/${variantId}`
+        `/products/${productId}/variants/${variantId}`,
       );
       return response;
     },
@@ -248,7 +250,7 @@ export const useStockByProduct = (productId?: string) => {
     queryKey: productsQueryKeys.stock.byProduct(productId || ""),
     queryFn: async () => {
       const response = await apiClient.get<StockQuant[]>(
-        `/inventory/stock/check/${productId}`
+        `/inventory/stock/check/${productId}`,
       );
       return response;
     },
@@ -265,7 +267,7 @@ export const useStockByLocation = (locationId?: string) => {
     queryKey: productsQueryKeys.stock.byLocation(locationId || ""),
     queryFn: async () => {
       const response = await apiClient.get<StockQuant[]>(
-        `/inventory/stock/location/${locationId}`
+        `/inventory/stock/location/${locationId}`,
       );
       return response;
     },
@@ -285,12 +287,12 @@ export const useStockLedger = (filters?: StockLedgerQueryDto) => {
         "/inventory/reports/stock-ledger",
         {
           params: filters,
-        }
+        },
       );
       return response;
     },
     enabled: Boolean(
-      filters?.productId || filters?.locationId || filters?.startDate
+      filters?.productId || filters?.locationId || filters?.startDate,
     ),
   });
 };
@@ -328,7 +330,7 @@ export const useStockLocations = () => {
     queryKey: productsQueryKeys.locations.all,
     queryFn: async () => {
       const response = await apiClient.get<StockLocation[]>(
-        "/inventory/locations"
+        "/inventory/locations",
       );
       return response;
     },
@@ -344,7 +346,7 @@ export const useStockLocation = (id?: string) => {
     queryKey: productsQueryKeys.locations.detail(id || ""),
     queryFn: async () => {
       const response = await apiClient.get<StockLocation>(
-        `/inventory/locations/${id}`
+        `/inventory/locations/${id}`,
       );
       return response;
     },

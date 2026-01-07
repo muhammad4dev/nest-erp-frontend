@@ -35,7 +35,7 @@ export function FiscalPeriodsPage() {
   const handleClosePeriod = async (periodId: string) => {
     if (
       confirm(
-        "Are you sure you want to close this period? This will prevent new entries from being posted."
+        "Are you sure you want to close this period? This will prevent new entries from being posted.",
       )
     ) {
       await closePeriod.mutateAsync({ id: periodId });

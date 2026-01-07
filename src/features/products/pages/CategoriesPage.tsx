@@ -271,7 +271,8 @@ export function CategoriesPage() {
 
       {categoryTree.length === 0 ? (
         <Alert severity="info">
-          No categories exist. Click "Create Category" to add the first one.
+          No categories exist. Click &quot;Create Category&quot; to add the
+          first one.
         </Alert>
       ) : (
         <Card>
@@ -362,7 +363,8 @@ export function CategoriesPage() {
         <DialogTitle>Delete Category</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete "{deleteConfirm.categoryName}"?
+            Are you sure you want to delete &quot;{deleteConfirm.categoryName}
+            &quot;?
           </Typography>
         </DialogContent>
         <DialogActions>

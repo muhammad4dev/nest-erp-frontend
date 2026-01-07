@@ -6,7 +6,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   useCreateFiscalPeriod,
@@ -25,30 +25,22 @@ export function FiscalPeriodFormDialog({
   period,
   onClose,
 }: FiscalPeriodFormDialogProps) {
-  const [formData, setFormData] = useState<CreateFiscalPeriodDto>({
-    name: "",
-    startDate: "",
-    endDate: "",
-  });
+  const [formData, setFormData] = useState<CreateFiscalPeriodDto>(
+    period
+      ? {
+          name: period.name,
+          startDate: period.startDate,
+          endDate: period.endDate,
+        }
+      : {
+          name: "",
+          startDate: "",
+          endDate: "",
+        }
+  );
 
   const createPeriod = useCreateFiscalPeriod();
   const updatePeriod = useUpdateFiscalPeriod();
-
-  useEffect(() => {
-    if (period) {
-      setFormData({
-        name: period.name,
-        startDate: period.startDate,
-        endDate: period.endDate,
-      });
-    } else {
-      setFormData({
-        name: "",
-        startDate: "",
-        endDate: "",
-      });
-    }
-  }, [period]);
 
   const handleSubmit = async () => {
     if (period) {
@@ -68,7 +60,6 @@ export function FiscalPeriodFormDialog({
       </DialogTitle>
       <DialogContent>
         <TextField
-          autoFocus
           margin="dense"
           label="Period Name"
           fullWidth

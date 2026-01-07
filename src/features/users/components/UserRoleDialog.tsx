@@ -40,7 +40,7 @@ export const UserRoleDialog: React.FC<UserRoleDialogProps> = ({
   const { data: rolesData, isLoading: rolesLoading } = useRoles();
 
   const roles = React.useMemo(() => {
-    return Array.isArray(rolesData) ? rolesData : rolesData?.data || [];
+    return rolesData || [];
   }, [rolesData]);
 
   // Form state
@@ -50,7 +50,7 @@ export const UserRoleDialog: React.FC<UserRoleDialogProps> = ({
   // Initialize roles from user
   React.useEffect(() => {
     if (open) {
-      setSelectedRoleIds(user.roles?.map((r) => r.id) || []);
+      setSelectedRoleIds((user.roles ?? []).map((r) => r.id));
       setError(null);
     }
   }, [open, user]);
@@ -67,7 +67,7 @@ export const UserRoleDialog: React.FC<UserRoleDialogProps> = ({
     }
 
     try {
-      const currentRoleIds = user.roles?.map((r) => r.id) || [];
+      const currentRoleIds = (user.roles ?? []).map((r) => r.id);
       const rolesToAdd = selectedRoleIds.filter(
         (id) => !currentRoleIds.includes(id)
       );

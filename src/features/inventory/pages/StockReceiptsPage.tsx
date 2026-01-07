@@ -14,14 +14,15 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 
 import {
   useCompleteStockReceipt,
   useDeleteStockReceipt,
 } from "@/lib/api/mutations/useStockReceipts";
 import { useStockReceipts } from "@/lib/api/queries/useStockReceipts";
+import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 import type { StockReceipt } from "@/types/api.types";
+
 import { StockReceiptFormDialog } from "../components/StockReceiptFormDialog";
 
 export function StockReceiptsPage() {
@@ -40,7 +41,7 @@ export function StockReceiptsPage() {
       receipt.sourceReference
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      receipt.location?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      receipt.location?.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getStatusColor = (status: string) => {
@@ -53,7 +54,7 @@ export function StockReceiptsPage() {
   };
 
   const getSourceTypeColor = (
-    type: string
+    type: string,
   ): "primary" | "success" | "warning" | "info" | "secondary" => {
     const colors: Record<
       string,

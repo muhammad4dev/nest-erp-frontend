@@ -53,7 +53,7 @@ export const useUpdateAccount = () => {
     }) => {
       const response = await apiClient.put<Account>(
         `/finance/accounts/${id}`,
-        data
+        data,
       );
       return response;
     },
@@ -94,7 +94,7 @@ export const useCreateJournalEntry = () => {
     mutationFn: async (data: CreateJournalEntryDto) => {
       const response = await apiClient.post<JournalEntry>(
         "/finance/journal-entries",
-        data
+        data,
       );
       return response;
     },
@@ -122,7 +122,7 @@ export const usePostJournalEntry = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await apiClient.post<JournalEntry>(
-        `/finance/journal-entries/${id}/post`
+        `/finance/journal-entries/${id}/post`,
       );
       return response;
     },
@@ -179,7 +179,7 @@ export const useCreateFiscalPeriod = () => {
     mutationFn: async (data: CreateFiscalPeriodDto) => {
       const response = await apiClient.post<FiscalPeriod>(
         "/finance/periods",
-        data
+        data,
       );
       return response;
     },
@@ -206,7 +206,7 @@ export const useUpdateFiscalPeriod = () => {
     }) => {
       const response = await apiClient.put<FiscalPeriod>(
         `/finance/periods/${id}`,
-        data
+        data,
       );
       return response;
     },
@@ -227,7 +227,7 @@ export const useCloseFiscalPeriod = () => {
     mutationFn: async ({ id, data }: { id: string; data?: ClosePeriodDto }) => {
       const response = await apiClient.post<FiscalPeriod>(
         `/finance/periods/${id}/close`,
-        data || {}
+        data || {},
       );
       return response;
     },
@@ -247,7 +247,7 @@ export const useReopenFiscalPeriod = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await apiClient.post<FiscalPeriod>(
-        `/finance/periods/${id}/reopen`
+        `/finance/periods/${id}/reopen`,
       );
       return response;
     },
@@ -268,7 +268,7 @@ export const useCreatePaymentTerm = () => {
     mutationFn: async (data: CreatePaymentTermDto) => {
       const response = await apiClient.post<PaymentTerm>(
         "/finance/payment-terms",
-        data
+        data,
       );
       return response;
     },
@@ -295,7 +295,7 @@ export const useUpdatePaymentTerm = () => {
     }) => {
       const response = await apiClient.put<PaymentTerm>(
         `/finance/payment-terms/${id}`,
-        data
+        data,
       );
       return response;
     },

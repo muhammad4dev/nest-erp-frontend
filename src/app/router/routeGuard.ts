@@ -13,7 +13,7 @@ type RouteGuardConfig = {
 
 export async function RouteGuard(
   config: RouteGuardConfig,
-  params: { lang: string }
+  params: { lang: string },
 ) {
   // Ensure store is hydrated from localStorage before checking auth
   await useAuthStore.persist.rehydrate();

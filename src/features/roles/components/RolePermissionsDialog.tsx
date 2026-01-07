@@ -37,9 +37,7 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
     usePermissions();
 
   const allPermissions = React.useMemo(() => {
-    return Array.isArray(permissionsResponse)
-      ? permissionsResponse
-      : permissionsResponse?.data || [];
+    return permissionsResponse || [];
   }, [permissionsResponse]);
 
   // Group permissions by resource
@@ -63,7 +61,7 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
   // Initialize permissions from role
   React.useEffect(() => {
     if (open) {
-      setSelectedPermissionIds(role.permissions?.map((p) => p.id) || []);
+      setSelectedPermissionIds((role.permissions ?? []).map((p) => p.id));
       setError(null);
     }
   }, [open, role]);

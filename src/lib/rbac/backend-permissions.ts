@@ -59,6 +59,18 @@ export const BACKEND_PERMISSIONS = {
     UPDATE: "update:partner" as const,
     DELETE: "delete:partner" as const,
   },
+  // Purchase Orders (Procurement)
+  PURCHASE_ORDERS: {
+    CREATE: "create:purchase_order" as const,
+    READ: "read:purchase_order" as const,
+    CONFIRM: "confirm:purchase_order" as const,
+  },
+  // Vendor Bills (Procurement)
+  VENDOR_BILLS: {
+    CREATE: "create:vendor_bill" as const,
+    READ: "read:vendor_bill" as const,
+    POST: "post:vendor_bill" as const,
+  },
   // Sales
   SALES: {
     CREATE: "create:sale" as const,

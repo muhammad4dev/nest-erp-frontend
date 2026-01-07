@@ -22,6 +22,7 @@ import { ROUTES } from "@/config/constants";
 import { useLogout } from "@/lib/api/mutations";
 import { useMe } from "@/lib/api/queries";
 import { IfAllowed } from "@/lib/rbac/components";
+import type { Permission, UserRole } from "@/lib/rbac/types";
 import { AppLink } from "@/shared/components/ui/AppLink";
 import { LocaleSwitcher } from "@/shared/components/ui/LocaleSwitcher";
 import { NotificationCenter } from "@/shared/components/ui/NotificationCenter";
@@ -55,6 +56,53 @@ export const AppLayout: React.FC = () => {
     });
   };
 
+  type NavItem = {
+    to: string;
+    label: string;
+    roles?: UserRole[];
+    permissions?: Permission[];
+  };
+
+  const navItems = React.useMemo<NavItem[]>(
+    () => [
+      {
+        to: "/$lang/app/users",
+        label: t("nav.users"),
+      },
+      {
+        to: "/$lang/app/roles",
+        label: t("nav.roles"),
+        roles: ["ADMIN"],
+      },
+      {
+        to: "/$lang/app/finance",
+        label: t("nav.finance"),
+        roles: ["ADMIN", "MANAGER"],
+      },
+      {
+        to: "/$lang/app/products",
+        label: t("nav.products"),
+        permissions: ["read:product"],
+      },
+      {
+        to: "/$lang/app/inventory",
+        label: t("nav.inventory"),
+        permissions: ["read:stock"],
+      },
+      {
+        to: "/$lang/app/partners",
+        label: t("nav.partners"),
+        permissions: ["read:partner"],
+      },
+      {
+        to: "/$lang/app/procurement",
+        label: t("nav.procurement"),
+        permissions: ["read:purchase_order"],
+      },
+    ],
+    [t]
+  );
+
   const drawer = (
     <Box>
       <Toolbar>
@@ -63,65 +111,19 @@ export const AppLayout: React.FC = () => {
         </Typography>
       </Toolbar>
       <List>
-        <ListItem disablePadding>
-          <ListItemButton component={AppLink} to="/$lang/app/dashboard">
-            <ListItemText primary={t("nav.dashboard")} />
-          </ListItemButton>
-        </ListItem>
-
-        <IfAllowed roles={["ADMIN"]}>
-          <ListItem disablePadding>
-            <ListItemButton component={AppLink} to="/$lang/app/admin">
-              <ListItemText primary={t("nav.admin")} />
-            </ListItemButton>
-          </ListItem>
-        </IfAllowed>
-
-        <ListItem disablePadding>
-          <ListItemButton component={AppLink} to="/$lang/app/users">
-            <ListItemText primary={t("nav.users")} />
-          </ListItemButton>
-        </ListItem>
-
-        <IfAllowed roles={["ADMIN"]}>
-          <ListItem disablePadding>
-            <ListItemButton component={AppLink} to="/$lang/app/roles">
-              <ListItemText primary={t("nav.roles")} />
-            </ListItemButton>
-          </ListItem>
-        </IfAllowed>
-
-        <IfAllowed roles={["ADMIN", "MANAGER"]}>
-          <ListItem disablePadding>
-            <ListItemButton component={AppLink} to="/$lang/app/finance">
-              <ListItemText primary={t("nav.finance")} />
-            </ListItemButton>
-          </ListItem>
-        </IfAllowed>
-
-        <IfAllowed permissions={["read:product"]}>
-          <ListItem disablePadding>
-            <ListItemButton component={AppLink} to="/$lang/app/products">
-              <ListItemText primary={t("nav.products")} />
-            </ListItemButton>
-          </ListItem>
-        </IfAllowed>
-
-        <IfAllowed permissions={["read:stock"]}>
-          <ListItem disablePadding>
-            <ListItemButton component={AppLink} to="/$lang/app/inventory">
-              <ListItemText primary={t("nav.inventory")} />
-            </ListItemButton>
-          </ListItem>
-        </IfAllowed>
-
-        <IfAllowed permissions={["read:partner"]}>
-          <ListItem disablePadding>
-            <ListItemButton component={AppLink} to="/$lang/app/partners">
-              <ListItemText primary={t("nav.partners")} />
-            </ListItemButton>
-          </ListItem>
-        </IfAllowed>
+        {navItems.map((item) => (
+          <IfAllowed
+            key={item.to}
+            roles={item.roles}
+            permissions={item.permissions}
+          >
+            <ListItem disablePadding>
+              <ListItemButton component={AppLink as React.ElementType} to={item.to as string}>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            </ListItem>
+          </IfAllowed>
+        ))}
       </List>
     </Box>
   );

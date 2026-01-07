@@ -11,7 +11,6 @@ import {
   Paper,
   Box,
   Button,
-  Alert,
   Chip,
   Tooltip,
   Stack,
@@ -43,13 +42,11 @@ export const RolesListPage: React.FC = () => {
     React.useState<Role | undefined>();
 
   // API hooks
-  const { data: rolesResponse, isLoading, error } = useRoles();
+  const { data: rolesResponse, isLoading } = useRoles();
   const deleteRoleMutation = useDeleteRole();
 
   const roles = React.useMemo(() => {
-    return Array.isArray(rolesResponse)
-      ? rolesResponse
-      : rolesResponse?.data || [];
+    return rolesResponse || [];
   }, [rolesResponse]);
 
   const handleCreateRole = () => {
@@ -187,12 +184,6 @@ export const RolesListPage: React.FC = () => {
             {t("roles.createRole", "Create Role")}
           </Button>
         </Box>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {t("common.errorLoading", "Error loading roles")}: {error.message}
-          </Alert>
-        )}
 
         <Paper sx={{ height: 600, width: "100%" }}>
           <DataGrid

@@ -14,13 +14,13 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 
 import {
   useCompleteStockIssue,
   useDeleteStockIssue,
 } from "@/lib/api/mutations/useStockReceipts";
 import { useStockIssues } from "@/lib/api/queries/useStockReceipts";
+import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 import type { StockIssue } from "@/types/api.types";
 
 import { StockIssueFormDialog } from "../components/StockIssueFormDialog";
@@ -39,7 +39,7 @@ export function StockIssuesPage() {
     (issue) =>
       issue.issueNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       issue.sourceReference?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      issue.location?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      issue.location?.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getStatusColor = (status: string) => {
@@ -52,7 +52,7 @@ export function StockIssuesPage() {
   };
 
   const getIssueTypeColor = (
-    type: string
+    type: string,
   ): "primary" | "success" | "warning" | "info" | "secondary" => {
     const colors: Record<
       string,

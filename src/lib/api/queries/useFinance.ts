@@ -53,7 +53,7 @@ export const useJournalEntries = (filters?: JournalEntryListFilters) => {
     queryFn: async () => {
       const response = await apiClient.get<PaginatedResponse<JournalEntry>>(
         "/finance/journal-entries",
-        { params: filters }
+        { params: filters },
       );
       return response;
     },
@@ -69,7 +69,7 @@ export const useJournalEntry = (id: string) => {
     queryKey: queryKeys.journalEntries.detail(id),
     queryFn: async () => {
       const response = await apiClient.get<JournalEntry>(
-        `/finance/journal-entries/${id}`
+        `/finance/journal-entries/${id}`,
       );
       return response;
     },
@@ -100,7 +100,7 @@ export const useCurrentFiscalPeriod = () => {
     queryKey: ["fiscal-periods", "current"],
     queryFn: async () => {
       const response = await apiClient.get<FiscalPeriod>(
-        "/finance/periods/current"
+        "/finance/periods/current",
       );
       return response;
     },
@@ -116,7 +116,7 @@ export const useFiscalPeriod = (id: string) => {
     queryKey: ["fiscal-periods", id],
     queryFn: async () => {
       const response = await apiClient.get<FiscalPeriod>(
-        `/finance/periods/${id}`
+        `/finance/periods/${id}`,
       );
       return response;
     },
@@ -136,7 +136,7 @@ export const useTrialBalance = (startDate?: string, endDate?: string) => {
         "/finance/reports/trial-balance",
         {
           params: { startDate, endDate },
-        }
+        },
       );
       return response;
     },
@@ -151,20 +151,20 @@ export const useTrialBalance = (startDate?: string, endDate?: string) => {
 export const useGeneralLedger = (
   accountId?: string,
   startDate?: string,
-  endDate?: string
+  endDate?: string,
 ) => {
   return useQuery({
     queryKey: queryKeys.financialReports.generalLedger(
       accountId,
       startDate,
-      endDate
+      endDate,
     ),
     queryFn: async () => {
       const response = await apiClient.get<GeneralLedgerEntry[]>(
         "/finance/reports/general-ledger",
         {
           params: { accountId, startDate, endDate },
-        }
+        },
       );
       return response;
     },
@@ -180,7 +180,7 @@ export const usePaymentTerms = () => {
     queryKey: queryKeys.paymentTerms.list(),
     queryFn: async () => {
       const response = await apiClient.get<PaymentTerm[]>(
-        "/finance/payment-terms"
+        "/finance/payment-terms",
       );
       return response;
     },
@@ -196,7 +196,7 @@ export const usePaymentTerm = (id: string) => {
     queryKey: queryKeys.paymentTerms.detail(id),
     queryFn: async () => {
       const response = await apiClient.get<PaymentTerm>(
-        `/finance/payment-terms/${id}`
+        `/finance/payment-terms/${id}`,
       );
       return response;
     },

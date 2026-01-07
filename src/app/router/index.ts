@@ -38,7 +38,7 @@ const loginRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("@/features/auth/pages/LoginPage").then((m) => ({
       default: m.LoginPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) => {
     await ensureAuthHydrated();
@@ -55,7 +55,7 @@ const forbiddenRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("@/features/forbidden/ForbiddenPage").then((m) => ({
       default: m.ForbiddenPage,
-    }))
+    })),
   ),
 });
 

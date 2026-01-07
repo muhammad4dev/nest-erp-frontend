@@ -16,8 +16,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useLocation } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useParams } from "@tanstack/react-router";
+import { useState } from "react";
 
 import {
   useCreateProduct,
@@ -32,22 +32,77 @@ import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 import { useNotification } from "@/shared/hooks/useNotification";
 import type {
   CreateProductDto,
+  Product,
   ProductType,
   UpdateProductDto,
 } from "@/types/api.types";
 
-export function ProductFormPage() {
-  const location = useLocation();
-  // Extract productId from the pathname
-  const pathParts = location.pathname.split("/");
-  const productId = pathParts.includes("new")
-    ? undefined
-    : pathParts[pathParts.length - 1];
+const DEFAULT_FORM_DATA: CreateProductDto & {
+  id?: string;
+  isActive?: boolean;
+  hasVariants?: boolean;
+} = {
+  sku: "",
+  name: "",
+  description: "",
+  productType: "GOODS" as ProductType,
+  categoryId: undefined,
+  salesPrice: 0,
+  costPrice: 0,
+  barcode: undefined,
+  weight: undefined,
+  canBeSold: true,
+  canBePurchased: true,
+  trackInventory: true,
+  imageUrl: undefined,
+  metadata: {},
+};
 
+export function ProductFormPage() {
+  const params = useParams({ strict: false });
+  const productId = params.productId;
+
+  const isEditMode = Boolean(
+    productId && productId !== "new" && productId !== "list"
+  );
+
+  const { data: product, isLoading: productLoading } = useProduct(
+    isEditMode && productId ? productId : undefined
+  );
+
+  if (productLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="400px"
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  return (
+    <ProductFormContent
+      key={product?.id || "new"}
+      product={product}
+      isEditMode={isEditMode}
+    />
+  );
+}
+
+function ProductFormContent({
+  product,
+  isEditMode,
+}: {
+  product?: Product;
+  isEditMode: boolean;
+}) {
   const navigate = useAppNavigate();
   const { showNotification } = useNotification();
-
-  const isEditMode = Boolean(productId && productId !== "new");
 
   // State management
   const [activeStep, setActiveStep] = useState(0);
@@ -57,42 +112,9 @@ export function ProductFormPage() {
       isActive?: boolean;
       hasVariants?: boolean;
     }
-  >({
-    sku: "",
-    name: "",
-    description: "",
-    productType: "GOODS" as ProductType,
-    categoryId: undefined,
-    salesPrice: 0,
-    costPrice: 0,
-    barcode: undefined,
-    weight: undefined,
-    canBeSold: true,
-    canBePurchased: true,
-    trackInventory: true,
-    imageUrl: undefined,
-    metadata: {},
-  });
-
-  const [attributeValues, setAttributeValues] = useState<
-    Record<string, string | number | boolean>
-  >({});
-
-  // API queries
-  const { data: product, isLoading: productLoading } = useProduct(
-    isEditMode && productId ? productId : undefined
-  );
-  const { data: categories = [] } = useProductCategories();
-  const { data: attributes = [] } = useProductAttributes();
-
-  // API mutations
-  const createProductMutation = useCreateProduct();
-  const updateProductMutation = useUpdateProduct();
-
-  // Load existing product data when in edit mode
-  useEffect(() => {
+  >(() => {
     if (isEditMode && product) {
-      setFormData({
+      return {
         id: product.id,
         sku: product.sku,
         name: product.name,
@@ -110,9 +132,22 @@ export function ProductFormPage() {
         hasVariants: product.hasVariants ?? false,
         imageUrl: product.imageUrl,
         metadata: product.metadata,
-      });
+      };
     }
-  }, [product, isEditMode]);
+    return DEFAULT_FORM_DATA;
+  });
+
+  const [attributeValues, setAttributeValues] = useState<
+    Record<string, string | number | boolean>
+  >({});
+
+  // API queries
+  const { data: categories = [] } = useProductCategories();
+  const { data: attributes = [] } = useProductAttributes();
+
+  // API mutations
+  const createProductMutation = useCreateProduct();
+  const updateProductMutation = useUpdateProduct();
 
   const handleFormChange = (field: keyof typeof formData, value: unknown) => {
     setFormData((prev) => ({
@@ -141,16 +176,21 @@ export function ProductFormPage() {
 
   const handleSubmit = async () => {
     try {
+      // Ensure numeric fields are numbers
+      const numericData = {
+        salesPrice: Number(formData.salesPrice) || 0,
+        costPrice: Number(formData.costPrice) || 0,
+        weight: formData.weight ? Number(formData.weight) : undefined,
+      };
+
       if (isEditMode && formData.id) {
         const updateDto: UpdateProductDto = {
           name: formData.name,
           description: formData.description,
           productType: formData.productType,
           categoryId: formData.categoryId,
-          salesPrice: formData.salesPrice,
-          costPrice: formData.costPrice,
+          ...numericData,
           barcode: formData.barcode,
-          weight: formData.weight,
           canBeSold: formData.canBeSold,
           canBePurchased: formData.canBePurchased,
           trackInventory: formData.trackInventory,
@@ -170,10 +210,8 @@ export function ProductFormPage() {
           description: formData.description,
           productType: formData.productType,
           categoryId: formData.categoryId,
-          salesPrice: formData.salesPrice,
-          costPrice: formData.costPrice,
+          ...numericData,
           barcode: formData.barcode,
-          weight: formData.weight,
           canBeSold: formData.canBeSold,
           canBePurchased: formData.canBePurchased,
           trackInventory: formData.trackInventory,
@@ -196,21 +234,6 @@ export function ProductFormPage() {
       );
     }
   };
-
-  if (productLoading) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="400px"
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
 
   const steps = ["Basic Info", "Attributes", "Variants", "Translations"];
 
@@ -458,7 +481,7 @@ export function ProductFormPage() {
                   {attributes.map((attr) => (
                     <Box key={attr.id}>
                       <Typography variant="subtitle2">{attr.name}</Typography>
-                      {attr.attributeType === "TEXT" && (
+                      {attr.type === "TEXT" && (
                         <TextField
                           fullWidth
                           value={attributeValues[attr.id] || ""}
@@ -469,7 +492,7 @@ export function ProductFormPage() {
                           sx={{ mt: 1 }}
                         />
                       )}
-                      {attr.attributeType === "NUMBER" && (
+                      {attr.type === "NUMBER" && (
                         <TextField
                           fullWidth
                           type="number"
@@ -484,7 +507,7 @@ export function ProductFormPage() {
                           sx={{ mt: 1 }}
                         />
                       )}
-                      {attr.attributeType === "BOOLEAN" && (
+                      {attr.type === "BOOLEAN" && (
                         <FormControlLabel
                           control={
                             <Checkbox
@@ -497,8 +520,8 @@ export function ProductFormPage() {
                           label={attr.name}
                         />
                       )}
-                      {(attr.attributeType === "SELECT" ||
-                        attr.attributeType === "MULTI_SELECT") && (
+                      {(attr.type === "SELECT" ||
+                        attr.type === "MULTI_SELECT") && (
                         <Select
                           fullWidth
                           value={attributeValues[attr.id] || ""}
@@ -507,16 +530,16 @@ export function ProductFormPage() {
                           }
                           size="small"
                           sx={{ mt: 1 }}
-                          multiple={attr.attributeType === "MULTI_SELECT"}
+                          multiple={attr.type === "MULTI_SELECT"}
                         >
-                          {attr.options?.map((opt) => (
+                          {(attr.options ?? []).map((opt) => (
                             <MenuItem key={opt} value={opt}>
                               {opt}
                             </MenuItem>
                           ))}
                         </Select>
                       )}
-                      {attr.attributeType === "DATE" && (
+                      {attr.type === "DATE" && (
                         <TextField
                           fullWidth
                           type="date"
@@ -529,7 +552,7 @@ export function ProductFormPage() {
                           sx={{ mt: 1 }}
                         />
                       )}
-                      {attr.attributeType === "COLOR" && (
+                      {attr.type === "COLOR" && (
                         <TextField
                           fullWidth
                           type="color"
@@ -562,8 +585,8 @@ export function ProductFormPage() {
                 </Typography>
               ) : (
                 <Typography color="text.secondary">
-                  Enable "Has Variants" in the Basic Info tab to add variants to
-                  this product.
+                  Enable &quot;Has Variants&quot; in the Basic Info tab to add
+                  variants to this product.
                 </Typography>
               )}
             </Box>

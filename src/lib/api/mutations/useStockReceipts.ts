@@ -26,7 +26,7 @@ export const useCreateStockReceipt = () => {
     mutationFn: async (data: CreateStockReceiptDto) => {
       const response = await apiClient.post<StockReceipt>(
         "/inventory/receipts",
-        data
+        data,
       );
       return response;
     },
@@ -52,7 +52,7 @@ export const useUpdateStockReceipt = () => {
     }) => {
       const response = await apiClient.put<StockReceipt>(
         `/inventory/receipts/${id}`,
-        data
+        data,
       );
       return response;
     },
@@ -74,7 +74,7 @@ export const useCompleteStockReceipt = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await apiClient.post<StockReceipt>(
-        `/inventory/receipts/${id}/complete`
+        `/inventory/receipts/${id}/complete`,
       );
       return response;
     },
@@ -115,7 +115,7 @@ export const useCreateStockIssue = () => {
     mutationFn: async (data: CreateStockIssueDto) => {
       const response = await apiClient.post<StockIssue>(
         "/inventory/issues",
-        data
+        data,
       );
       return response;
     },
@@ -141,7 +141,7 @@ export const useUpdateStockIssue = () => {
     }) => {
       const response = await apiClient.put<StockIssue>(
         `/inventory/issues/${id}`,
-        data
+        data,
       );
       return response;
     },
@@ -163,7 +163,7 @@ export const useCompleteStockIssue = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await apiClient.post<StockIssue>(
-        `/inventory/issues/${id}/complete`
+        `/inventory/issues/${id}/complete`,
       );
       return response;
     },

@@ -74,7 +74,7 @@ export function AttributesPage() {
   const [filterTab, setFilterTab] = useState(0);
 
   // API
-  const { data: attributes = [], isLoading, error } = useProductAttributes();
+  const { data: attributes = [], isLoading } = useProductAttributes();
   const createMutation = useCreateProductAttribute();
   const updateMutation = useUpdateProductAttribute();
   const deleteMutation = useDeleteProductAttribute();
@@ -206,16 +206,16 @@ export function AttributesPage() {
     );
   }
 
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Alert severity="error">
-          Failed to load attributes:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
-        </Alert>
-      </Container>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+  //       <Alert severity="error">
+  //         Failed to load attributes:{" "}
+  //         {error instanceof Error ? error.message : "Unknown error"}
+  //       </Alert>
+  //     </Container>
+  //   );
+  // }
 
   // Filter attributes based on tab
   const filteredAttributes =
@@ -521,7 +521,8 @@ export function AttributesPage() {
         <DialogTitle>Delete Attribute</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete "{deleteConfirm.attributeName}"?
+            Are you sure you want to delete &quot;{deleteConfirm.attributeName}
+            &quot;?
           </Typography>
         </DialogContent>
         <DialogActions>

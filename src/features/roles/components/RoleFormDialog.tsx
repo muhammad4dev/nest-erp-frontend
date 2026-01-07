@@ -66,8 +66,8 @@ export const RoleFormDialog: React.FC<RoleFormDialogProps> = ({
       setFormError(
         t(
           "roles.validation.nameTooShort",
-          "Role name must be at least 3 characters"
-        )
+          "Role name must be at least 3 characters",
+        ),
       );
       return;
     }
@@ -93,7 +93,7 @@ export const RoleFormDialog: React.FC<RoleFormDialogProps> = ({
       setFormError(
         error instanceof Error
           ? error.message
-          : t("common.error", "An error occurred")
+          : t("common.error", "An error occurred"),
       );
     }
   };
@@ -137,7 +137,7 @@ export const RoleFormDialog: React.FC<RoleFormDialogProps> = ({
             disabled={isSubmitting}
             helperText={t(
               "roles.descriptionHelp",
-              "Optional description of the role purpose"
+              "Optional description of the role purpose",
             )}
           />
         </DialogContent>

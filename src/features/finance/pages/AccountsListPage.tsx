@@ -25,7 +25,7 @@ export function AccountsListPage() {
   };
 
   const getAccountTypeColor = (
-    type: AccountType
+    type: AccountType,
   ):
     | "default"
     | "primary"

@@ -32,7 +32,7 @@ export const useCreateProduct = () => {
     mutationFn: async (data: CreateProductDto) => {
       const response = await apiClient.post<Product>(
         "/inventory/products",
-        data
+        data,
       );
       return response;
     },
@@ -58,7 +58,7 @@ export const useUpdateProduct = () => {
     }) => {
       const response = await apiClient.put<Product>(
         `/inventory/products/${id}`,
-        data
+        data,
       );
       return response;
     },
@@ -81,7 +81,7 @@ export const useCreateProductCategory = () => {
     mutationFn: async (data: CreateProductCategoryDto) => {
       const response = await apiClient.post<ProductCategory>(
         "/products/categories",
-        data
+        data,
       );
       return response;
     },
@@ -112,7 +112,7 @@ export const useUpdateProductCategory = () => {
     }) => {
       const response = await apiClient.put<ProductCategory>(
         `/products/categories/${id}`,
-        data
+        data,
       );
       return response;
     },
@@ -161,7 +161,7 @@ export const useCreateProductAttribute = () => {
     mutationFn: async (data: CreateProductAttributeDto) => {
       const response = await apiClient.post<ProductAttribute>(
         "/products/attributes",
-        data
+        data,
       );
       return response;
     },
@@ -189,7 +189,7 @@ export const useUpdateProductAttribute = () => {
     }) => {
       const response = await apiClient.put<ProductAttribute>(
         `/products/attributes/${id}`,
-        data
+        data,
       );
       return response;
     },
@@ -238,7 +238,7 @@ export const useCreateProductVariant = () => {
     }) => {
       const response = await apiClient.post<ProductVariant>(
         `/products/${productId}/variants`,
-        data
+        data,
       );
       return response;
     },
@@ -271,7 +271,7 @@ export const useUpdateProductVariant = () => {
     }) => {
       const response = await apiClient.put<ProductVariant>(
         `/products/${productId}/variants/${variantId}`,
-        data
+        data,
       );
       return response;
     },
@@ -282,7 +282,7 @@ export const useUpdateProductVariant = () => {
       queryClient.invalidateQueries({
         queryKey: productsQueryKeys.variants.detail(
           variables.productId,
-          variables.variantId
+          variables.variantId,
         ),
       });
     },
@@ -329,7 +329,7 @@ export const useGenerateVariants = () => {
     }) => {
       const response = await apiClient.post<ProductVariant[]>(
         `/products/${productId}/variants/generate`,
-        data
+        data,
       );
       return response;
     },
@@ -410,7 +410,7 @@ export const useCreateStockLocation = () => {
     }) => {
       const response = await apiClient.post<StockLocation>(
         "/inventory/locations",
-        data
+        data,
       );
       return response;
     },
@@ -444,7 +444,7 @@ export const useUpdateStockLocation = () => {
     }) => {
       const response = await apiClient.put<StockLocation>(
         `/inventory/locations/${id}`,
-        data
+        data,
       );
       return response;
     },

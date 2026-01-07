@@ -25,7 +25,7 @@ export function ProductsListPage() {
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.barcode?.toLowerCase().includes(searchTerm.toLowerCase())
+      product.barcode?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getTypeColor = (type: string) => {

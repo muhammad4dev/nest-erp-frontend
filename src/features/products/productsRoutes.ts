@@ -10,7 +10,7 @@ const productsIndexRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/ProductsIndexPage").then((m) => ({
       default: m.ProductsIndexPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:product"] }, params),
@@ -23,7 +23,7 @@ const productsListRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/ProductsListPage").then((m) => ({
       default: m.ProductsListPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:product"] }, params),
@@ -36,7 +36,7 @@ const productNewRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/ProductFormPage").then((m) => ({
       default: m.ProductFormPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["create:product"] }, params),
@@ -49,7 +49,7 @@ const productDetailRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/ProductFormPage").then((m) => ({
       default: m.ProductFormPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:product"] }, params),
@@ -62,7 +62,7 @@ const categoriesRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/CategoriesPage").then((m) => ({
       default: m.CategoriesPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:product"] }, params),
@@ -75,7 +75,7 @@ const attributesRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/AttributesPage").then((m) => ({
       default: m.AttributesPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:product"] }, params),
@@ -88,7 +88,7 @@ const stockRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/StockPage").then((m) => ({
       default: m.StockPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:stock"] }, params),
@@ -98,8 +98,8 @@ export const productsRoutes = [
   productsIndexRoute,
   productsListRoute,
   productNewRoute,
-  productDetailRoute,
   categoriesRoute,
   attributesRoute,
   stockRoute,
+  productDetailRoute,
 ] as const;

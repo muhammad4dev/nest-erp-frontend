@@ -1,12 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import type {
-  User,
-  Role,
-  Tenant,
-  Permission,
-  PaginatedResponse,
-} from "@/types/api.types";
+import type { User, Role, Tenant, Permission } from "@/types/api.types";
 
 import { apiClient } from "../client";
 import { queryKeys } from "../query-keys";
@@ -20,7 +14,7 @@ export const useUsers = (filters?: UserListFilters) => {
   return useQuery({
     queryKey: queryKeys.users.list(filters),
     queryFn: () =>
-      apiClient.get<User>("/users", {
+      apiClient.get<User[]>("/users", {
         params: filters,
       }),
   });

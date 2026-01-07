@@ -127,7 +127,7 @@ export function TrialBalancePage() {
               <MenuItem value="">
                 <em>All Periods</em>
               </MenuItem>
-              {periods?.map((period) => (
+              {(periods ?? []).map((period) => (
                 <MenuItem key={period.id} value={period.id}>
                   {period.name}
                 </MenuItem>
@@ -205,7 +205,7 @@ export function TrialBalancePage() {
                 </TableCell>
               </TableRow>
             )}
-            {entries?.map((entry) => (
+            {(entries ?? []).map((entry) => (
               <TableRow key={entry.accountId} hover>
                 <TableCell>{entry.accountCode}</TableCell>
                 <TableCell>{entry.accountName}</TableCell>

@@ -27,7 +27,7 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: async (
-      credentials: LoginCredentials
+      credentials: LoginCredentials,
     ): Promise<LoginResponse> => {
       // Step 1: Call /auth/login to get tokens
       const loginResponse = (await apiClient.post<LoginResponseDto>(
@@ -37,7 +37,7 @@ export const useLogin = () => {
           headers: {
             "x-tenant-id": credentials.tenantId,
           },
-        }
+        },
       )) as unknown as LoginResponseDto;
 
       // Step 2: Call /auth/me to get user data (with token in Authorization header)
@@ -48,14 +48,14 @@ export const useLogin = () => {
             Authorization: `Bearer ${loginResponse.access_token}`,
             "x-tenant-id": credentials.tenantId,
           },
-        }
+        },
       )) as unknown as UserMeResponseDto;
 
       // Transform backend response to frontend AuthUser format
       const permissions =
         userResponse.roles?.flatMap(
           (role) =>
-            role.permissions?.map((p) => `${p.action}:${p.resource}`) || []
+            role.permissions?.map((p) => `${p.action}:${p.resource}`) || [],
         ) || [];
 
       // Determine primary role (use highest privilege role)
@@ -111,7 +111,7 @@ export const useLogout = () => {
       } catch (error) {
         console.warn(
           "Logout API call failed, proceeding with local logout",
-          error
+          error,
         );
       }
     },

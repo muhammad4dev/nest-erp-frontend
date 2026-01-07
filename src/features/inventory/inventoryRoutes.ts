@@ -10,7 +10,7 @@ const inventoryIndexRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/InventoryIndexPage").then((m) => ({
       default: m.InventoryIndexPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:stock"] }, params),
@@ -23,7 +23,7 @@ const stockReceiptsRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/StockReceiptsPage").then((m) => ({
       default: m.StockReceiptsPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:stock"] }, params),
@@ -36,7 +36,7 @@ const stockReceiptDetailRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/StockReceiptDetailPage").then((m) => ({
       default: m.StockReceiptDetailPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:stock"] }, params),
@@ -49,7 +49,7 @@ const stockIssuesRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/StockIssuesPage").then((m) => ({
       default: m.StockIssuesPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:stock"] }, params),
@@ -62,7 +62,7 @@ const stockIssueDetailRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/StockIssueDetailPage").then((m) => ({
       default: m.StockIssueDetailPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ permissions: ["read:stock"] }, params),

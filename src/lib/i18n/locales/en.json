@@ -34,7 +34,9 @@
     "products": "Products",
     "inventory": "Inventory",
     "stockReceipts": "Stock Receipts",
-    "stockIssues": "Stock Issues"
+    "stockIssues": "Stock Issues",
+    "partners": "Partners",
+    "procurement": "Procurement"
   },
   "common": {
     "loading": "Loading...",
@@ -148,7 +150,8 @@
     "active": "Active",
     "inactive": "Inactive",
     "searchPlaceholder": "Search by email or name...",
-    "confirmDelete": "Are you sure you want to delete this user?"
+    "confirmDelete": "Are you sure you want to delete this user?",
+    "assignRoles": "Assign Roles"
   },
   "inventory": {
     "stockReceipts": {

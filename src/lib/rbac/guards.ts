@@ -11,7 +11,7 @@ export const hasRole = (user: AuthUser | null, role: UserRole): boolean => {
 
   // Check if user has the role in their roles array
   const hasRoleInArray = user.roles?.some(
-    (r) => r.name.toUpperCase() === role.toUpperCase()
+    (r) => r.name.toUpperCase() === role.toUpperCase(),
   );
 
   if (hasRoleInArray) return true;
@@ -27,7 +27,7 @@ export const hasRole = (user: AuthUser | null, role: UserRole): boolean => {
  */
 export const hasRoleByName = (
   user: AuthUser | null,
-  roleName: string
+  roleName: string,
 ): boolean => {
   if (!user) return false;
   return (
@@ -41,7 +41,7 @@ export const hasRoleByName = (
  */
 export const hasPermission = (
   user: AuthUser | null,
-  permission: Permission
+  permission: Permission,
 ): boolean => {
   if (!user) return false;
   if (user.role === "ADMIN") return true; // Admin has all permissions
@@ -54,7 +54,7 @@ export const hasPermission = (
  */
 export const checkRoles = (
   user: AuthUser | null,
-  allowedRoles?: UserRole[]
+  allowedRoles?: UserRole[],
 ): boolean => {
   if (!allowedRoles || allowedRoles.length === 0) return true;
   if (!user) return false;
@@ -67,13 +67,13 @@ export const checkRoles = (
  */
 export const checkPermissions = (
   user: AuthUser | null,
-  requiredPermissions?: Permission[]
+  requiredPermissions?: Permission[],
 ): boolean => {
   if (!requiredPermissions || requiredPermissions.length === 0) return true;
   if (!user) return false;
 
   return requiredPermissions.every((permission) =>
-    hasPermission(user, permission)
+    hasPermission(user, permission),
   );
 };
 

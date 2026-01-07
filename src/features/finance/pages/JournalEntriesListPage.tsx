@@ -87,7 +87,7 @@ export function JournalEntriesListPage() {
       headerName: "Lines",
       width: 100,
       sortable: false,
-      valueGetter: (value) => value?.length || 0,
+      valueGetter: (_value, row) => row.lines?.length || 0,
     },
     {
       field: "createdAt",

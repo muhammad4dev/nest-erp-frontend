@@ -19,10 +19,14 @@ export const LoginPage: React.FC = () => {
   const navigate = useAppNavigate();
   const loginMutation = useLogin();
 
-  const [email, setEmail] = React.useState("admin@email.com");
-  const [password, setPassword] = React.useState("123123");
+  const [email, setEmail] = React.useState(
+    import.meta.env.VITE_DEFAULT_EMAIL || "",
+  );
+  const [password, setPassword] = React.useState(
+    import.meta.env.VITE_DEFAULT_PASSWORD || "",
+  );
   const [tenantId, setTenantId] = React.useState(
-    "019b70ce-918a-7a54-8302-eef2203a2a22",
+    import.meta.env.VITE_DEFAULT_TENANT_ID || "",
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,9 +110,7 @@ export const LoginPage: React.FC = () => {
               variant="caption"
               display="block"
               sx={{ mt: 2, textAlign: "center", color: "text.secondary" }}
-            >
-              Demo: admin@email.com / 123123
-            </Typography>
+            ></Typography>
           </Box>
         </Paper>
       </Box>

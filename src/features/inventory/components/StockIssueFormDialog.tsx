@@ -1,3 +1,4 @@
+import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
@@ -19,19 +20,18 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useProducts } from "@/lib/api/queries/useProducts";
-import { useStockLocations } from "@/lib/api/queries/useProducts";
 import {
   useCreateStockIssue,
   useUpdateStockIssue,
 } from "@/lib/api/mutations/useStockReceipts";
+import { useProducts } from "@/lib/api/queries/useProducts";
+import { useStockLocations } from "@/lib/api/queries/useProducts";
 import type {
   CreateStockIssueDto,
   IssueType,
@@ -128,12 +128,20 @@ export const StockIssueFormDialog: React.FC<StockIssueFormDialogProps> = ({
   const [lines, setLines] = useState(getInitialLines);
 
   // Reset form when issue or mode changes
-  useEffect(() => {
-    if (open) {
-      setFormData(getInitialFormData());
-      setLines(getInitialLines());
-    }
-  }, [open, mode, issue]);
+  // Track dependencies for reset
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [prevMode, setPrevMode] = useState(mode);
+  const [prevIssue, setPrevIssue] = useState(issue);
+
+  if (open && (!prevOpen || mode !== prevMode || issue !== prevIssue)) {
+    setFormData(getInitialFormData());
+    setLines(getInitialLines());
+    setPrevOpen(open);
+    setPrevMode(mode);
+    setPrevIssue(issue);
+  } else if (!open && prevOpen) {
+    setPrevOpen(false);
+  }
 
   const handleAddLine = () => {
     setLines([

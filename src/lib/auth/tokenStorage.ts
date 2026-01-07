@@ -67,7 +67,7 @@ export function getStoredUser(): PersistedAuthState["state"]["user"] | null {
  */
 export function updateStoredTokens(
   accessToken: string,
-  refreshToken: string
+  refreshToken: string,
 ): void {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.AUTH);

@@ -19,8 +19,7 @@ export const useNotifications = () => {
   const query = useQuery<NotificationHistoryItem[]>({
     queryKey: queryKeys.notifications.all,
     queryFn: async () => {
-      const response = await apiClient.get("/notifications");
-      return response.data;
+      return await apiClient.get<NotificationHistoryItem[]>("/notifications");
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
@@ -34,10 +33,10 @@ export const useNotifications = () => {
           if (oldData.some((item) => item.id === notification.id))
             return oldData;
           return [notification, ...oldData].slice(0, 50);
-        },
+        }
       );
     },
-    [queryClient],
+    [queryClient]
   );
 
   return {

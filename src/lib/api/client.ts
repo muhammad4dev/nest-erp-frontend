@@ -79,7 +79,7 @@ const refreshToken = async (): Promise<string> => {
         headers: {
           "x-tenant-id": authUser.tenantId,
         },
-      }
+      },
     );
 
     const { access_token: newAccessToken, refresh_token: newRefreshToken } =
@@ -145,7 +145,7 @@ client.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor for error handling and token refresh
@@ -205,7 +205,7 @@ client.interceptors.response.use(
           // Store the intended destination
           sessionStorage.setItem(
             "redirectAfterLogin",
-            window.location.pathname
+            window.location.pathname,
           );
           // Use router navigation instead of window.location to avoid reload
           window.history.pushState({}, "", "/en/login");
@@ -225,32 +225,32 @@ client.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // Type-safe API client wrapper
 export const apiClient = {
   get: <T>(
     url: string,
-    config?: Parameters<typeof client.get>[1]
+    config?: Parameters<typeof client.get>[1],
   ): Promise<T> => client.get(url, config),
   post: <T>(
     url: string,
     data?: unknown,
-    config?: Parameters<typeof client.post>[2]
+    config?: Parameters<typeof client.post>[2],
   ): Promise<T> => client.post(url, data, config),
   put: <T>(
     url: string,
     data?: unknown,
-    config?: Parameters<typeof client.put>[2]
+    config?: Parameters<typeof client.put>[2],
   ): Promise<T> => client.put(url, data, config),
   patch: <T>(
     url: string,
     data?: unknown,
-    config?: Parameters<typeof client.patch>[2]
+    config?: Parameters<typeof client.patch>[2],
   ): Promise<T> => client.patch(url, data, config),
   delete: <T = void>(
     url: string,
-    config?: Parameters<typeof client.delete>[1]
+    config?: Parameters<typeof client.delete>[1],
   ): Promise<T> => client.delete(url, config),
 };

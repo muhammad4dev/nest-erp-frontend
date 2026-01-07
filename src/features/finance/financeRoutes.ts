@@ -9,7 +9,7 @@ const financeIndexRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/FinanceIndexPage").then((m) => ({
       default: m.FinanceIndexPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ roles: ["ADMIN", "MANAGER"] }, params),
@@ -21,7 +21,7 @@ const accountsRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/AccountsListPage").then((m) => ({
       default: m.AccountsListPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ roles: ["ADMIN", "MANAGER"] }, params),
@@ -33,7 +33,7 @@ const journalEntriesRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/JournalEntriesListPage").then((m) => ({
       default: m.JournalEntriesListPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ roles: ["ADMIN", "MANAGER"] }, params),
@@ -45,7 +45,7 @@ const fiscalPeriodsRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/FiscalPeriodsPage").then((m) => ({
       default: m.FiscalPeriodsPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) => RouteGuard({ roles: ["ADMIN"] }, params),
 });
@@ -56,7 +56,7 @@ const trialBalanceRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/TrialBalancePage").then((m) => ({
       default: m.TrialBalancePage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ roles: ["ADMIN", "MANAGER"] }, params),
@@ -68,7 +68,7 @@ const generalLedgerRoute = createRoute({
   component: lazyRouteComponent(() =>
     import("./pages/GeneralLedgerPage").then((m) => ({
       default: m.GeneralLedgerPage,
-    }))
+    })),
   ),
   beforeLoad: async ({ params }) =>
     RouteGuard({ roles: ["ADMIN", "MANAGER"] }, params),

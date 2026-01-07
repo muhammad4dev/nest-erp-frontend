@@ -176,7 +176,7 @@ export const UserProfilePage: React.FC = () => {
               {t("users.roles", "Roles")}
             </Typography>
             <Stack direction="column" spacing={1}>
-              {user.roles?.map((role) => (
+              {(user.roles ?? []).map((role) => (
                 <Chip
                   key={role.id}
                   label={role.name}
@@ -200,7 +200,7 @@ export const UserProfilePage: React.FC = () => {
             </Typography>
             {user.permissions && user.permissions.length > 0 ? (
               <List dense>
-                {user.permissions.map((permission) => (
+                {(user.permissions ?? []).map((permission) => (
                   <ListItem key={permission.action + permission.resource}>
                     <ListItemText
                       primary={

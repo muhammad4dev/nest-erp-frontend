@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useCreateJournalEntry } from "@/lib/api/mutations/useFinance";
 import { useAccounts } from "@/lib/api/queries/useFinance";
@@ -39,45 +39,55 @@ interface LineItem extends Omit<CreateJournalLineDto, "accountId"> {
   accountId: string;
 }
 
-export function JournalEntryFormDialog({
-  open,
-  entry,
-  onClose,
-}: JournalEntryFormDialogProps) {
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [lines, setLines] = useState<LineItem[]>([
+function getInitialState(entry?: JournalEntry) {
+  const defaultLines: LineItem[] = [
     { account: null, accountId: "", debit: 0, credit: 0, description: "" },
     { account: null, accountId: "", debit: 0, credit: 0, description: "" },
-  ]);
+  ];
 
-  const { data: accounts } = useAccounts();
-  const createEntry = useCreateJournalEntry();
-
-  useEffect(() => {
-    if (entry) {
-      setDescription(entry.reference || "");
-      setDate(entry.transactionDate);
-      if (entry.lines) {
-        setLines(
-          entry.lines.map((line) => ({
+  if (entry) {
+    return {
+      description: entry.reference || "",
+      date: entry.transactionDate,
+      lines: entry.lines
+        ? entry.lines.map((line) => ({
             account: line.account || null,
             accountId: line.accountId,
             debit: line.debit,
             credit: line.credit,
             description: line.description || "",
           }))
-        );
-      }
-    } else {
-      setDescription("");
-      setDate(new Date().toISOString().split("T")[0]);
-      setLines([
-        { account: null, accountId: "", debit: 0, credit: 0, description: "" },
-        { account: null, accountId: "", debit: 0, credit: 0, description: "" },
-      ]);
-    }
-  }, [entry]);
+        : defaultLines,
+    };
+  }
+
+  return {
+    description: "",
+    date: new Date().toISOString().split("T")[0],
+    lines: defaultLines,
+  };
+}
+
+export function JournalEntryFormDialog({
+  open,
+  entry,
+  onClose,
+}: JournalEntryFormDialogProps) {
+  const initialState = useMemo(() => getInitialState(entry), [entry]);
+
+  const [description, setDescription] = useState(initialState.description);
+  const [date, setDate] = useState(initialState.date);
+  const [lines, setLines] = useState<LineItem[]>(initialState.lines);
+
+  // Reset state when entry changes
+  useEffect(() => {
+    setDescription(initialState.description);
+    setDate(initialState.date);
+    setLines(initialState.lines);
+  }, [initialState]);
+
+  const { data: accounts } = useAccounts();
+  const createEntry = useCreateJournalEntry();
 
   const handleAddLine = () => {
     setLines([
@@ -95,7 +105,7 @@ export function JournalEntryFormDialog({
   const handleLineChange = (
     index: number,
     field: keyof LineItem,
-    value: string | number | Account | null
+    value: string | number | Account | null,
   ) => {
     const newLines = [...lines];
     if (field === "account") {
@@ -226,7 +236,7 @@ export function JournalEntryFormDialog({
                         handleLineChange(
                           index,
                           "debit",
-                          parseFloat(e.target.value) || 0
+                          parseFloat(e.target.value) || 0,
                         )
                       }
                       type="number"
@@ -243,7 +253,7 @@ export function JournalEntryFormDialog({
                         handleLineChange(
                           index,
                           "credit",
-                          parseFloat(e.target.value) || 0
+                          parseFloat(e.target.value) || 0,
                         )
                       }
                       type="number"

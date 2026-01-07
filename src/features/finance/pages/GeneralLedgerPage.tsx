@@ -215,7 +215,7 @@ export function GeneralLedgerPage() {
                 </TableCell>
               </TableRow>
             )}
-            {entries?.map((entry, index) => (
+            {(entries ?? []).map((entry, index) => (
               <TableRow key={index} hover>
                 <TableCell>
                   {new Date(entry.date).toLocaleDateString()}
