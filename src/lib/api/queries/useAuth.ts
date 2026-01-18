@@ -23,13 +23,14 @@ export const useMe = () => {
         API_PATHS.AUTH_ME
       );
 
-      // Transform backend response to frontend AuthUser format
-      const permissions =
-        userResponse.roles?.flatMap(
-          (role) =>
-            (role.permissions ?? []).map((p) => `${p.action}:${p.resource}`) ||
-            []
-        ) || [];
+      // Use denormalized permissions from backend if available (O(1)),
+      // otherwise fall back to computing from roles (for backward compatibility)
+      const permissions: string[] =
+        userResponse.permissions ??
+        userResponse.roles?.flatMap((role) =>
+          (role.permissions ?? []).map((p) => `${p.action}:${p.resource}`)
+        ) ??
+        [];
 
       // Determine primary role (use highest privilege role)
       const rolePriority: Record<string, number> = {

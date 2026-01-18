@@ -365,6 +365,11 @@ export interface UserMeResponseDto {
   createdAt: string;
   updatedAt: string;
   version: number;
+  /**
+   * Denormalized permissions array (O(1) access).
+   * Format: ["action:resource", ...]
+   */
+  permissions?: string[];
   roles?: Array<{
     id: string;
     tenantId: string;
