@@ -343,6 +343,128 @@ export interface Partner extends BaseEntity {
   paymentTerm?: PaymentTerm;
 }
 
+export const SalesOrderStatus = {
+  DRAFT: "DRAFT",
+  SENT: "SENT",
+  CONFIRMED: "CONFIRMED",
+  INVOICED: "INVOICED",
+  CANCELLED: "CANCELLED",
+} as const;
+
+export type SalesOrderStatus =
+  (typeof SalesOrderStatus)[keyof typeof SalesOrderStatus];
+
+export const InvoiceType = {
+  INVOICE: "INVOICE",
+  CREDIT_NOTE: "CREDIT_NOTE",
+  DEBIT_NOTE: "DEBIT_NOTE",
+} as const;
+
+export type InvoiceType = (typeof InvoiceType)[keyof typeof InvoiceType];
+
+export const InvoiceStatus = {
+  DRAFT: "DRAFT",
+  SENT: "SENT",
+  PAID: "PAID",
+  CANCELLED: "CANCELLED",
+  RETURNED: "RETURNED",
+} as const;
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus];
+
+export interface SalesOrder extends BaseEntity {
+  orderNumber: string;
+  partnerId: string;
+  partner?: Partner;
+  orderDate: string;
+  status: SalesOrderStatus;
+  totalAmount: number;
+  lines: SalesOrderLine[];
+}
+
+export interface SalesOrderLine extends BaseEntity {
+  orderId: string;
+  order?: SalesOrder;
+  productId: string;
+  product?: Product;
+  quantity: number;
+  unitPrice: number;
+  discountRate: number;
+  subtotal: number;
+}
+
+export interface Invoice extends BaseEntity {
+  number: string;
+  partnerId: string;
+  partner?: Partner;
+  salesOrderId?: string;
+  salesOrder?: SalesOrder;
+  originalInvoiceId?: string;
+  originalInvoice?: Invoice;
+  type: InvoiceType;
+  status: InvoiceStatus;
+  issuedAt?: string;
+  dueDate?: string;
+
+  // ETA eInvoicing fields
+  etaUuid?: string;
+  etaSignature?: string;
+  etaSubmissionId?: string;
+
+  // Amounts
+  totalDiscountAmount: number;
+  netAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+
+  paymentTermId?: string;
+  paymentTerm?: PaymentTerm;
+  notes?: string;
+  lines: InvoiceLine[];
+}
+
+export interface InvoiceLine extends BaseEntity {
+  invoiceId: string;
+  invoice?: Invoice;
+  productId: string;
+  product?: Product;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  discountRate: number;
+  discountAmount: number;
+  subtotal: number;
+  taxAmount: number;
+  lineTotal: number;
+}
+
+export const SalesAnalysisGroupBy = {
+  CUSTOMER: "CUSTOMER",
+  PRODUCT: "PRODUCT",
+  MONTH: "MONTH",
+} as const;
+
+export type SalesAnalysisGroupBy =
+  (typeof SalesAnalysisGroupBy)[keyof typeof SalesAnalysisGroupBy];
+
+export interface SalesAnalysisEntry {
+  id: string;
+  name: string;
+  orderCount: number;
+  totalRevenue: number;
+}
+
+export interface ARAgingEntry {
+  partnerId: string;
+  partnerName: string;
+  currentAmount: number;
+  overdue1To30: number;
+  overdue31To60: number;
+  overdue61To90: number;
+  overdue90Plus: number;
+  totalDue: number;
+}
+
 // ========== DTOs (Data Transfer Objects) ==========
 
 // Auth DTOs
@@ -950,4 +1072,54 @@ export interface CreateRfqDto {
   partnerId: string;
   orderDate: string;
   lines: CreatePurchaseOrderLineDto[];
+}
+
+// Sales DTOs
+export interface CreateSalesOrderLineDto {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  discountRate?: number;
+}
+
+export interface CreateSalesOrderDto {
+  partnerId: string;
+  lines: CreateSalesOrderLineDto[];
+}
+
+export interface UpdateSalesOrderDto {
+  partnerId?: string;
+  orderDate?: string;
+  lines?: CreateSalesOrderLineDto[];
+}
+
+export interface SalesAnalysisQueryDto {
+  groupBy?: SalesAnalysisGroupBy;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ARAgingQueryDto {
+  asOfDate?: string;
+}
+
+// POS DTOs
+export interface SyncOrderLineDto {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  discountRate: number;
+}
+
+export interface SyncOrderDto {
+  id: string;
+  partnerId: string;
+  orderDate: string;
+  lines: SyncOrderLineDto[];
+}
+
+export interface POSSyncResult {
+  synced: number;
+  failed: number;
+  errors: Array<{ id: string; error: string }>;
 }

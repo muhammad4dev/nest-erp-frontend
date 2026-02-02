@@ -36,7 +36,8 @@
     "stockReceipts": "Stock Receipts",
     "stockIssues": "Stock Issues",
     "partners": "Partners",
-    "procurement": "Procurement"
+    "procurement": "Procurement",
+    "sales": "Sales"
   },
   "common": {
     "loading": "Loading...",

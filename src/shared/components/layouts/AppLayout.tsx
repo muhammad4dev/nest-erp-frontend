@@ -99,8 +99,13 @@ export const AppLayout: React.FC = () => {
         label: t("nav.procurement"),
         permissions: ["read:purchase_order"],
       },
+      {
+        to: "/$lang/app/sales",
+        label: t("nav.sales"),
+        permissions: ["read:sales_order"],
+      },
     ],
-    [t]
+    [t],
   );
 
   const drawer = (
@@ -118,7 +123,10 @@ export const AppLayout: React.FC = () => {
             permissions={item.permissions}
           >
             <ListItem disablePadding>
-              <ListItemButton component={AppLink as React.ElementType} to={item.to as string}>
+              <ListItemButton
+                component={AppLink as React.ElementType}
+                to={item.to as string}
+              >
                 <ListItemText primary={item.label} />
               </ListItemButton>
             </ListItem>

@@ -31,7 +31,13 @@
     "roles": "الأدوار",
     "permissions": "الأذونات",
     "finance": "المالية",
-    "products": "المنتجات"
+    "products": "المنتجات",
+    "inventory": "المخزون",
+    "stockReceipts": "إيصالات المخزون",
+    "stockIssues": "إصدارات المخزون",
+    "partners": "الشركاء",
+    "procurement": "المشتريات",
+    "sales": "المبيعات"
   },
   "common": {
     "loading": "جاري التحميل...",

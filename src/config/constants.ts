@@ -32,6 +32,6 @@ export const ROUTES = {
   ROOT: "/",
   APP: "/$lang/app",
   LOGIN: "/$lang/login",
-  DASHBOARD: "/$lang/app/dashboard",
+  DASHBOARD: "/$lang/app",
   FORBIDDEN: "/$lang/forbidden",
 } as const;
