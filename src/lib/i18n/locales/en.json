@@ -37,7 +37,8 @@
     "stockIssues": "Stock Issues",
     "partners": "Partners",
     "procurement": "Procurement",
-    "sales": "Sales"
+    "sales": "Sales",
+    "pos": "Point of Sale"
   },
   "common": {
     "loading": "Loading...",

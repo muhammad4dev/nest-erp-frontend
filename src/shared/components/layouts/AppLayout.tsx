@@ -104,6 +104,11 @@ export const AppLayout: React.FC = () => {
         label: t("nav.sales"),
         permissions: ["read:sales_order"],
       },
+      {
+        to: "/$lang/app/pos",
+        label: t("nav.pos"),
+        permissions: ["sync:pos"],
+      },
     ],
     [t],
   );
