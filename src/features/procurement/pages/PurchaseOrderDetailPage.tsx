@@ -31,7 +31,7 @@ import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 import { PurchaseOrderStatus } from "@/types/api.types";
 
 const getStatusColor = (
-  status: PurchaseOrderStatus
+  status: PurchaseOrderStatus,
 ): "default" | "primary" | "secondary" | "success" | "warning" | "info" => {
   switch (status) {
     case PurchaseOrderStatus.RFQ:

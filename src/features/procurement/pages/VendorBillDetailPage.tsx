@@ -29,7 +29,7 @@ import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 import { VendorBillStatus, VendorBillType } from "@/types/api.types";
 
 const getStatusColor = (
-  status: VendorBillStatus
+  status: VendorBillStatus,
 ): "default" | "success" | "warning" | "error" => {
   switch (status) {
     case VendorBillStatus.DRAFT:
@@ -46,7 +46,7 @@ const getStatusColor = (
 };
 
 const getTypeColor = (
-  type: VendorBillType
+  type: VendorBillType,
 ): "primary" | "success" | "warning" => {
   switch (type) {
     case VendorBillType.BILL:

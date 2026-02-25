@@ -21,7 +21,7 @@ import type { APAgingEntry, Partner } from "@/types/api.types";
 export function APAgingReportPage() {
   const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
   const [referenceDate, setReferenceDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
 
   const { data: partners = [] } = usePartners();
@@ -154,7 +154,7 @@ export function APAgingReportPage() {
         overdue61To90: 0,
         overdue90Plus: 0,
         totalDue: 0,
-      }
+      },
     );
   };
 

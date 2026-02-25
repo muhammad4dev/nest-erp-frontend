@@ -9,7 +9,7 @@ import { VendorBillStatus, VendorBillType } from "@/types/api.types";
 import type { VendorBill } from "@/types/api.types";
 
 const getStatusColor = (
-  status: VendorBillStatus
+  status: VendorBillStatus,
 ): "default" | "success" | "warning" | "error" => {
   switch (status) {
     case VendorBillStatus.DRAFT:
@@ -26,7 +26,7 @@ const getStatusColor = (
 };
 
 const getTypeColor = (
-  type: VendorBillType
+  type: VendorBillType,
 ): "primary" | "success" | "warning" => {
   switch (type) {
     case VendorBillType.BILL:
@@ -44,7 +44,7 @@ export function VendorBillsListPage() {
   const navigate = useAppNavigate();
   const { data: bills = [], isLoading } = useVendorBills();
   const [statusFilter, setStatusFilter] = useState<VendorBillStatus | "ALL">(
-    "ALL"
+    "ALL",
   );
 
   const filteredBills =

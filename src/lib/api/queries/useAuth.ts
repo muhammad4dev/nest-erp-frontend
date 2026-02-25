@@ -20,7 +20,7 @@ export const useMe = () => {
     queryKey: ["auth", "me"],
     queryFn: async (): Promise<AuthUser> => {
       const userResponse = await apiClient.get<UserMeResponseDto>(
-        API_PATHS.AUTH_ME
+        API_PATHS.AUTH_ME,
       );
 
       // Use denormalized permissions from backend if available (O(1)),
@@ -28,7 +28,7 @@ export const useMe = () => {
       const permissions: string[] =
         userResponse.permissions ??
         userResponse.roles?.flatMap((role) =>
-          (role.permissions ?? []).map((p) => `${p.action}:${p.resource}`)
+          (role.permissions ?? []).map((p) => `${p.action}:${p.resource}`),
         ) ??
         [];
 

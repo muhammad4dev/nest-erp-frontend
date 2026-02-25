@@ -33,10 +33,10 @@ export const useNotifications = () => {
           if (oldData.some((item) => item.id === notification.id))
             return oldData;
           return [notification, ...oldData].slice(0, 50);
-        }
+        },
       );
     },
-    [queryClient]
+    [queryClient],
   );
 
   return {

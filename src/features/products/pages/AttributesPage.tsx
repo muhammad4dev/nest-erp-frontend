@@ -171,7 +171,7 @@ export function AttributesPage() {
     } catch (error) {
       showNotification(
         error instanceof Error ? error.message : "Failed to save attribute",
-        "error"
+        "error",
       );
     }
   };
@@ -184,7 +184,7 @@ export function AttributesPage() {
       } catch (error) {
         showNotification(
           error instanceof Error ? error.message : "Failed to delete attribute",
-          "error"
+          "error",
         );
       }
     }
@@ -231,7 +231,7 @@ export function AttributesPage() {
       acc[type] = filteredAttributes.filter((a) => a.type === type);
       return acc;
     },
-    {} as Record<AttributeType, ProductAttribute[]>
+    {} as Record<AttributeType, ProductAttribute[]>,
   );
 
   const renderAttributeCard = (attribute: ProductAttribute) => (
@@ -446,7 +446,7 @@ export function AttributesPage() {
                     e.target.value
                       .split(",")
                       .map((opt) => opt.trim())
-                      .filter(Boolean)
+                      .filter(Boolean),
                   )
                 }
                 multiline

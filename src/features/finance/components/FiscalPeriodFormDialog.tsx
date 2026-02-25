@@ -36,7 +36,7 @@ export function FiscalPeriodFormDialog({
           name: "",
           startDate: "",
           endDate: "",
-        }
+        },
   );
 
   const createPeriod = useCreateFiscalPeriod();

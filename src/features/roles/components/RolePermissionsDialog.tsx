@@ -70,7 +70,7 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
     setSelectedPermissionIds((prev) =>
       prev.includes(permissionId)
         ? prev.filter((id) => id !== permissionId)
-        : [...prev, permissionId]
+        : [...prev, permissionId],
     );
   };
 
@@ -78,13 +78,13 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
     const resourcePermissions = groupedPermissions[resource];
     const resourcePermissionIds = resourcePermissions.map((p) => p.id);
     const allSelected = resourcePermissionIds.every((id) =>
-      selectedPermissionIds.includes(id)
+      selectedPermissionIds.includes(id),
     );
 
     if (allSelected) {
       // Deselect all
       setSelectedPermissionIds((prev) =>
-        prev.filter((id) => !resourcePermissionIds.includes(id))
+        prev.filter((id) => !resourcePermissionIds.includes(id)),
       );
     } else {
       // Select all
@@ -108,7 +108,7 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
       setError(
         err instanceof Error
           ? err.message
-          : t("common.error", "An error occurred")
+          : t("common.error", "An error occurred"),
       );
     }
   };
@@ -150,10 +150,10 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
                   ([resource, permissions]) => {
                     const resourcePermissionIds = permissions.map((p) => p.id);
                     const allSelected = resourcePermissionIds.every((id) =>
-                      selectedPermissionIds.includes(id)
+                      selectedPermissionIds.includes(id),
                     );
                     const someSelected = resourcePermissionIds.some((id) =>
-                      selectedPermissionIds.includes(id)
+                      selectedPermissionIds.includes(id),
                     );
 
                     return (
@@ -195,7 +195,7 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
                               control={
                                 <Checkbox
                                   checked={selectedPermissionIds.includes(
-                                    permission.id
+                                    permission.id,
                                   )}
                                   onChange={() =>
                                     handleTogglePermission(permission.id)
@@ -223,7 +223,7 @@ export const RolePermissionsDialog: React.FC<RolePermissionsDialogProps> = ({
                         </Box>
                       </Box>
                     );
-                  }
+                  },
                 )
               )}
             </Box>

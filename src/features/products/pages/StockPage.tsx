@@ -101,7 +101,7 @@ export function StockPage() {
   const { data: locations = [], isLoading: locationsLoading } =
     useStockLocations();
   const { data: stockByLocation = [] } = useStockByLocation(
-    selectedLocationId || ""
+    selectedLocationId || "",
   );
   const { data: stockLedger = [] } = useStockLedger({});
 
@@ -164,7 +164,7 @@ export function StockPage() {
     } catch (error) {
       showNotification(
         error instanceof Error ? error.message : "Failed to save location",
-        "error"
+        "error",
       );
     }
   };
@@ -196,7 +196,7 @@ export function StockPage() {
     } catch (error) {
       showNotification(
         error instanceof Error ? error.message : "Failed to transfer stock",
-        "error"
+        "error",
       );
     }
   };
@@ -228,7 +228,7 @@ export function StockPage() {
     } catch (error) {
       showNotification(
         error instanceof Error ? error.message : "Failed to adjust stock",
-        "error"
+        "error",
       );
     }
   };
@@ -313,7 +313,7 @@ export function StockPage() {
 
   const renderLocationTree = (
     locs: StockLocation[],
-    level = 0
+    level = 0,
   ): React.ReactNode[] => {
     return locs.flatMap((loc) => [
       renderLocationNode(loc, level),

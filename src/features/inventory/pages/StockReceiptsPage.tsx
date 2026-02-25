@@ -14,7 +14,6 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-
 import {
   useCompleteStockReceipt,
   useDeleteStockReceipt,

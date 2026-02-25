@@ -141,7 +141,7 @@ export function CategoriesPage() {
     } catch (error) {
       showNotification(
         error instanceof Error ? error.message : "Failed to save category",
-        "error"
+        "error",
       );
     }
   };
@@ -154,7 +154,7 @@ export function CategoriesPage() {
       } catch (error) {
         showNotification(
           error instanceof Error ? error.message : "Failed to delete category",
-          "error"
+          "error",
         );
       }
     }
@@ -230,7 +230,7 @@ export function CategoriesPage() {
 
   const renderCategoryTree = (
     categories: ProductCategory[],
-    level = 0
+    level = 0,
   ): React.ReactNode[] => {
     return categories.flatMap((cat) => [
       renderCategoryNode(cat, level),
@@ -239,7 +239,7 @@ export function CategoriesPage() {
   };
 
   const getAllCategories = (
-    cats: ProductCategory[] = categoryTree
+    cats: ProductCategory[] = categoryTree,
   ): ProductCategory[] => {
     return cats.flatMap((cat) => [
       cat,
@@ -314,7 +314,7 @@ export function CategoriesPage() {
                 onChange={(e) =>
                   handleFormChange(
                     "parentId",
-                    e.target.value ? e.target.value : undefined
+                    e.target.value ? e.target.value : undefined,
                   )
                 }
               >
@@ -322,7 +322,7 @@ export function CategoriesPage() {
                 {allCategories
                   .filter(
                     (cat) =>
-                      !formState.editingId || cat.id !== formState.editingId
+                      !formState.editingId || cat.id !== formState.editingId,
                   )
                   .map((cat) => (
                     <MenuItem key={cat.id} value={cat.id}>

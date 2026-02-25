@@ -61,7 +61,7 @@ export const UserRoleDialog: React.FC<UserRoleDialogProps> = ({
 
     if (selectedRoleIds.length === 0) {
       setError(
-        t("users.validation.rolesRequired", "Please select at least one role")
+        t("users.validation.rolesRequired", "Please select at least one role"),
       );
       return;
     }
@@ -69,10 +69,10 @@ export const UserRoleDialog: React.FC<UserRoleDialogProps> = ({
     try {
       const currentRoleIds = (user.roles ?? []).map((r) => r.id);
       const rolesToAdd = selectedRoleIds.filter(
-        (id) => !currentRoleIds.includes(id)
+        (id) => !currentRoleIds.includes(id),
       );
       const rolesToRemove = currentRoleIds.filter(
-        (id) => !selectedRoleIds.includes(id)
+        (id) => !selectedRoleIds.includes(id),
       );
 
       // Assign new roles
@@ -90,7 +90,7 @@ export const UserRoleDialog: React.FC<UserRoleDialogProps> = ({
       setError(
         err instanceof Error
           ? err.message
-          : t("common.error", "An error occurred")
+          : t("common.error", "An error occurred"),
       );
     }
   };

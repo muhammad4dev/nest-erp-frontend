@@ -62,7 +62,7 @@ export const RolesListPage: React.FC = () => {
   const handleDeleteRole = async (roleId: string) => {
     if (
       window.confirm(
-        t("roles.confirmDelete", "Are you sure you want to delete this role?")
+        t("roles.confirmDelete", "Are you sure you want to delete this role?"),
       )
     ) {
       await deleteRoleMutation.mutateAsync(roleId);

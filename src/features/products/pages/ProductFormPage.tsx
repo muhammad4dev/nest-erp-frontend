@@ -63,11 +63,11 @@ export function ProductFormPage() {
   const productId = params.productId;
 
   const isEditMode = Boolean(
-    productId && productId !== "new" && productId !== "list"
+    productId && productId !== "new" && productId !== "list",
   );
 
   const { data: product, isLoading: productLoading } = useProduct(
-    isEditMode && productId ? productId : undefined
+    isEditMode && productId ? productId : undefined,
   );
 
   if (productLoading) {
@@ -158,7 +158,7 @@ function ProductFormContent({
 
   const handleAttributeChange = (
     attributeId: string,
-    value: string | number | boolean
+    value: string | number | boolean,
   ) => {
     setAttributeValues((prev) => ({
       ...prev,
@@ -230,7 +230,7 @@ function ProductFormContent({
     } catch (error) {
       showNotification(
         error instanceof Error ? error.message : "Failed to save product",
-        "error"
+        "error",
       );
     }
   };
@@ -328,7 +328,7 @@ function ProductFormContent({
                       onChange={(e) =>
                         handleFormChange(
                           "categoryId",
-                          e.target.value || undefined
+                          e.target.value || undefined,
                         )
                       }
                     >
@@ -349,7 +349,7 @@ function ProductFormContent({
                       onChange={(e) =>
                         handleFormChange(
                           "salesPrice",
-                          parseFloat(e.target.value)
+                          parseFloat(e.target.value),
                         )
                       }
                       inputProps={{ step: "0.01" }}
@@ -364,7 +364,7 @@ function ProductFormContent({
                       onChange={(e) =>
                         handleFormChange(
                           "costPrice",
-                          parseFloat(e.target.value)
+                          parseFloat(e.target.value),
                         )
                       }
                       inputProps={{ step: "0.01" }}
@@ -391,7 +391,7 @@ function ProductFormContent({
                           "weight",
                           e.target.value
                             ? parseFloat(e.target.value)
-                            : undefined
+                            : undefined,
                         )
                       }
                       inputProps={{ step: "0.01" }}
@@ -500,7 +500,7 @@ function ProductFormContent({
                           onChange={(e) =>
                             handleAttributeChange(
                               attr.id,
-                              parseFloat(e.target.value)
+                              parseFloat(e.target.value),
                             )
                           }
                           size="small"

@@ -28,7 +28,7 @@ export function GeneralLedgerPage() {
   const { data: entries, isLoading } = useGeneralLedger(
     selectedAccount?.id,
     startDate,
-    endDate
+    endDate,
   );
 
   const handlePrint = () => {

@@ -164,7 +164,7 @@ export const StockIssueFormDialog: React.FC<StockIssueFormDialogProps> = ({
   const handleLineChange = (
     index: number,
     field: keyof LineItemForm,
-    value: string | number
+    value: string | number,
   ) => {
     const newLines = [...lines];
     newLines[index] = {
@@ -198,11 +198,11 @@ export const StockIssueFormDialog: React.FC<StockIssueFormDialogProps> = ({
   const calculateTotals = () => {
     const totalQuantity = lines.reduce(
       (sum, line) => sum + Number(line.quantity || 0),
-      0
+      0,
     );
     const totalValue = lines.reduce(
       (sum, line) => sum + Number(line.lineTotal || 0),
-      0
+      0,
     );
     return { totalQuantity, totalValue };
   };
@@ -415,7 +415,7 @@ export const StockIssueFormDialog: React.FC<StockIssueFormDialogProps> = ({
                             handleLineChange(
                               index,
                               "quantity",
-                              Number(e.target.value)
+                              Number(e.target.value),
                             )
                           }
                           size="small"
@@ -432,7 +432,7 @@ export const StockIssueFormDialog: React.FC<StockIssueFormDialogProps> = ({
                             handleLineChange(
                               index,
                               "unitCost",
-                              Number(e.target.value)
+                              Number(e.target.value),
                             )
                           }
                           size="small"
@@ -451,7 +451,7 @@ export const StockIssueFormDialog: React.FC<StockIssueFormDialogProps> = ({
                             handleLineChange(
                               index,
                               "batchNumber",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           size="small"

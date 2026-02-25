@@ -26,7 +26,7 @@ export function JournalEntriesListPage() {
   const handlePost = async (entryId: string) => {
     if (
       confirm(
-        "Are you sure you want to post this journal entry? Posted entries cannot be edited."
+        "Are you sure you want to post this journal entry? Posted entries cannot be edited.",
       )
     ) {
       await postEntry.mutateAsync(entryId);
@@ -39,7 +39,7 @@ export function JournalEntriesListPage() {
   };
 
   const getStatusColor = (
-    status: JournalStatus
+    status: JournalStatus,
   ): "default" | "success" | "warning" | "error" => {
     const colorMap: Record<
       JournalStatus,
