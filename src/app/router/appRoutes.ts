@@ -6,11 +6,13 @@ import { procurementRoutes } from "@/features/procurement/procurementRoutes";
 import { productsRoutes } from "@/features/products/productsRoutes";
 import { rolesRoutes } from "@/features/roles/rolesRoutes";
 import { salesRoutes } from "@/features/sales/salesRoutes";
+import { tenantsRoutes } from "@/features/tenants/tenantsRoutes";
 import { usersRoutes } from "@/features/users/usersRoutes";
 
 export const appRoutes = [
   ...usersRoutes,
   ...rolesRoutes,
+  ...tenantsRoutes,
   ...financeRoutes,
   ...productsRoutes,
   ...inventoryRoutes,

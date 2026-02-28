@@ -75,6 +75,11 @@ export const AppLayout: React.FC = () => {
         roles: ["ADMIN"],
       },
       {
+        to: "/$lang/app/tenants",
+        label: t("nav.tenants"),
+        roles: ["ADMIN"],
+      },
+      {
         to: "/$lang/app/finance",
         label: t("nav.finance"),
         roles: ["ADMIN", "MANAGER"],

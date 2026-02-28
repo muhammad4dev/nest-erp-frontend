@@ -38,7 +38,9 @@
     "partners": "Partners",
     "procurement": "Procurement",
     "sales": "Sales",
-    "pos": "Point of Sale"
+    "pos": "Point of Sale",
+    "tenants": "Tenants",
+    "tenant": "Tenant"
   },
   "common": {
     "loading": "Loading...",
@@ -81,7 +83,15 @@
     "success": "Success",
     "warning": "Warning",
     "info": "Info",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "name": "Name",
+    "schemaName": "Schema Name",
+    "createdDate": "Created Date",
+    "active": "Active",
+    "inactive": "Inactive",
+    "view": "View",
+    "confirmDelete": "Confirm Delete",
+    "deleteConfirmation": "Are you sure you want to delete"
   },
   "validation": {
     "required": "This field is required",

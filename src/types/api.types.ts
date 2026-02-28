@@ -61,9 +61,11 @@ export interface Branch extends BaseEntity {
 }
 
 export interface Tenant extends BaseEntity {
+  id: string;
   name: string;
-  domain?: string;
+  schemaName?: string;
   isActive: boolean;
+  createdAt: string;
   users?: User[];
 }
 
@@ -546,12 +548,11 @@ export interface UpdateRoleDto {
 // Tenant DTOs
 export interface CreateTenantDto {
   name: string;
-  domain?: string;
+  schemaName?: string;
 }
 
 export interface UpdateTenantDto {
   name?: string;
-  domain?: string;
   isActive?: boolean;
 }
 

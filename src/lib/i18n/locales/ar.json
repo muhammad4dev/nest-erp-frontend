@@ -38,7 +38,9 @@
     "partners": "الشركاء",
     "procurement": "المشتريات",
     "sales": "المبيعات",
-    "pos": "نقطة البيع"
+    "pos": "نقطة البيع",
+    "tenants": "المستأجرين",
+    "tenant": "المستأجر"
   },
   "common": {
     "loading": "جاري التحميل...",
@@ -80,7 +82,16 @@
     "status": "الحالة",
     "success": "نجاح",
     "warning": "تحذير",
-    "info": "معلومات"
+    "info": "معلومات",
+    "refresh": "تحديث",
+    "name": "الاسم",
+    "schemaName": "اسم المخطط",
+    "createdDate": "تاريخ الإنشاء",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "view": "عرض",
+    "confirmDelete": "تأكيد الحذف",
+    "deleteConfirmation": "هل أنت متأكد من رغبتك في حذف"
   },
   "validation": {
     "required": "هذا الحقل مطلوب",
