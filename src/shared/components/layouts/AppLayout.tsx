@@ -80,6 +80,11 @@ export const AppLayout: React.FC = () => {
         roles: ["ADMIN"],
       },
       {
+        to: "/$lang/app/hrms",
+        label: t("nav.hrms"),
+        permissions: ["read:employee"],
+      },
+      {
         to: "/$lang/app/finance",
         label: t("nav.finance"),
         roles: ["ADMIN", "MANAGER"],

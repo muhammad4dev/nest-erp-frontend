@@ -8,11 +8,13 @@ import { rolesRoutes } from "@/features/roles/rolesRoutes";
 import { salesRoutes } from "@/features/sales/salesRoutes";
 import { tenantsRoutes } from "@/features/tenants/tenantsRoutes";
 import { usersRoutes } from "@/features/users/usersRoutes";
+import { hrmsRoutes } from "@/features/hrms/hrmsRoutes";
 
 export const appRoutes = [
   ...usersRoutes,
   ...rolesRoutes,
   ...tenantsRoutes,
+  ...hrmsRoutes,
   ...financeRoutes,
   ...productsRoutes,
   ...inventoryRoutes,

@@ -105,6 +105,17 @@ export const BACKEND_PERMISSIONS = {
     UPDATE: "update:employee" as const,
     DELETE: "delete:employee" as const,
   },
+  // Employment Contracts (HRMS)
+  EMPLOYMENT_CONTRACTS: {
+    CREATE: "create:employment_contract" as const,
+    READ: "read:employment_contract" as const,
+    UPDATE: "update:employment_contract" as const,
+    DELETE: "delete:employment_contract" as const,
+  },
+  // HRMS Reports
+  HRMS_REPORTS: {
+    READ: "read:hrms_reports" as const,
+  },
   // POS
   POS: {
     SYNC: "sync:pos" as const,

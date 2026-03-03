@@ -71,6 +71,33 @@ export const queryKeys = {
   notifications: {
     all: ["notifications"] as const,
   },
+
+  // HRMS Module
+  employees: {
+    all: ["employees"] as const,
+    list: (filters?: Record<string, unknown>) =>
+      [...queryKeys.employees.all, "list", filters] as const,
+    detail: (id: string) => [...queryKeys.employees.all, "detail", id] as const,
+  },
+
+  contracts: {
+    all: ["contracts"] as const,
+    list: (filters?: Record<string, unknown>) =>
+      [...queryKeys.contracts.all, "list", filters] as const,
+    detail: (id: string) => [...queryKeys.contracts.all, "detail", id] as const,
+    byEmployee: (employeeId: string) =>
+      [...queryKeys.contracts.all, "employee", employeeId] as const,
+  },
+
+  hrmsReports: {
+    all: ["hrms-reports"] as const,
+    headcount: (filters?: Record<string, unknown>) =>
+      [...queryKeys.hrmsReports.all, "headcount", filters] as const,
+    salaryExpense: (filters?: Record<string, unknown>) =>
+      [...queryKeys.hrmsReports.all, "salary-expense", filters] as const,
+    contractExpiration: (filters?: Record<string, unknown>) =>
+      [...queryKeys.hrmsReports.all, "expiration", filters] as const,
+  },
 } as const;
 
 // Type helpers for common filter types

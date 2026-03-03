@@ -40,7 +40,11 @@
     "sales": "Sales",
     "pos": "Point of Sale",
     "tenants": "Tenants",
-    "tenant": "Tenant"
+    "tenant": "Tenant",
+    "hrms": "HRMS",
+    "employees": "Employees",
+    "contracts": "Contracts",
+    "reports": "Reports"
   },
   "common": {
     "loading": "Loading...",

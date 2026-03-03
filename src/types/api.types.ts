@@ -1124,3 +1124,73 @@ export interface POSSyncResult {
   failed: number;
   errors: Array<{ id: string; error: string }>;
 }
+
+// ========== HRMS MODULE ==========
+
+export const ContractStatus = {
+  DRAFT: "DRAFT",
+  ACTIVE: "ACTIVE",
+  EXPIRED: "EXPIRED",
+  TERMINATED: "TERMINATED",
+} as const;
+
+export type ContractStatus =
+  (typeof ContractStatus)[keyof typeof ContractStatus];
+
+export interface Employee extends BaseEntity {
+  code: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  jobTitle?: string;
+  department?: string;
+  hireDate: string;
+  isActive: boolean;
+  contracts?: EmploymentContract[];
+}
+
+export interface EmploymentContract extends BaseEntity {
+  employeeId: string;
+  employee?: Employee;
+  startDate: string;
+  endDate?: string;
+  wage: number;
+  jobPosition: string;
+  status: ContractStatus;
+}
+
+export interface CreateEmployeeDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  jobTitle: string;
+  department: string;
+  hireDate: string;
+}
+
+export interface UpdateEmployeeDto {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  jobTitle?: string;
+  department?: string;
+  hireDate?: string;
+  isActive?: boolean;
+}
+
+export interface CreateContractDto {
+  startDate: string;
+  endDate?: string;
+  wage: number;
+  jobPosition: string;
+}
+
+export interface UpdateContractDto {
+  startDate?: string;
+  endDate?: string;
+  wage?: number;
+  jobPosition?: string;
+}
