@@ -957,6 +957,41 @@ export interface UpdateStockIssueDto {
   lines?: CreateStockIssueLineDto[];
 }
 
+// ========== STOCK TRANSFERS ==========
+
+export type TransferStatus = "DRAFT" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+
+export interface StockTransfer extends BaseEntity {
+  reference?: string;
+  productId: string;
+  product?: Product;
+  fromLocationId: string;
+  fromLocation?: Location;
+  toLocationId: string;
+  toLocation?: Location;
+  quantity: number;
+  status: TransferStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ========== STOCK ADJUSTMENTS ==========
+
+export type AdjustmentStatus = "DRAFT" | "COMPLETED" | "CANCELLED";
+
+export interface StockAdjustment extends BaseEntity {
+  reference?: string;
+  productId: string;
+  product?: Product;
+  locationId: string;
+  location?: Location;
+  quantity: number;
+  reason: string;
+  status: AdjustmentStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ========== PROCUREMENT MODULE ==========
 
 export const PurchaseOrderStatus = {
