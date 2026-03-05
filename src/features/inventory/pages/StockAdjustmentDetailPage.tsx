@@ -1,8 +1,4 @@
-import {
-  ArrowBack,
-  CheckCircle,
-  Cancel as CancelIcon,
-} from "@mui/icons-material";
+import { ArrowBack, Cancel as CancelIcon } from "@mui/icons-material";
 import {
   Alert,
   Button,
@@ -20,11 +16,8 @@ import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import {
-  useCompleteStockTransfer,
-  useCancelStockTransfer,
-} from "@/lib/api/mutations/useStockTransfers";
-import { useStockTransfer } from "@/lib/api/queries/useStockTransfers";
+import { useCancelStockAdjustment } from "@/lib/api/mutations/useStockAdjustments";
+import { useStockAdjustment } from "@/lib/api/queries/useStockAdjustments";
 import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
 
 const getStatusColor = (
@@ -34,55 +27,42 @@ const getStatusColor = (
     DRAFT: "default",
     COMPLETED: "success",
     CANCELLED: "error",
-    IN_PROGRESS: "warning",
   };
   return colors[status] || "default";
 };
 
-export function StockTransferDetailPage() {
+export function StockAdjustmentDetailPage() {
   const { t } = useTranslation();
   const navigate = useAppNavigate();
   const params = useParams({ strict: false });
-  const transferId = "transferId" in params ? params.transferId : undefined;
+  const adjustmentId =
+    "adjustmentId" in params ? params.adjustmentId : undefined;
 
-  const { data: transfer, isLoading, error } = useStockTransfer(transferId);
-  const completeTransfer = useCompleteStockTransfer();
-  const cancelTransfer = useCancelStockTransfer();
+  const {
+    data: adjustment,
+    isLoading,
+    error,
+  } = useStockAdjustment(adjustmentId as string | undefined);
+  const cancelAdjustment = useCancelStockAdjustment();
   const [actionLoading, setActionLoading] = useState(false);
 
-  const canComplete = transfer && transfer.status === "DRAFT";
   const canCancel =
-    transfer &&
-    transfer.status !== "COMPLETED" &&
-    transfer.status !== "CANCELLED";
+    adjustment &&
+    adjustment.status !== "COMPLETED" &&
+    adjustment.status !== "CANCELLED";
 
-  const handleCompleteTransfer = async () => {
-    if (!transferId) return;
+  const handleCancelAdjustment = async () => {
+    if (!adjustmentId) return;
 
     if (
-      !window.confirm(t("confirm.completeTransfer", "Complete this transfer?"))
+      !window.confirm(t("confirm.cancelAdjustment", "Cancel this adjustment?"))
     ) {
       return;
     }
 
     setActionLoading(true);
     try {
-      await completeTransfer.mutateAsync(transferId);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleCancelTransfer = async () => {
-    if (!transferId) return;
-
-    if (!window.confirm(t("confirm.cancelTransfer", "Cancel this transfer?"))) {
-      return;
-    }
-
-    setActionLoading(true);
-    try {
-      await cancelTransfer.mutateAsync(transferId);
+      await cancelAdjustment.mutateAsync(adjustmentId as string);
     } finally {
       setActionLoading(false);
     }
@@ -96,7 +76,7 @@ export function StockTransferDetailPage() {
     );
   }
 
-  if (error || !transfer) {
+  if (error || !adjustment) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Alert severity="error">
@@ -104,7 +84,7 @@ export function StockTransferDetailPage() {
         </Alert>
         <Button
           onClick={() =>
-            navigate({ to: "/$lang/app/inventory/stock-transfers" })
+            navigate({ to: "/$lang/app/inventory/stock-adjustments" })
           }
           sx={{ mt: 2 }}
         >
@@ -120,19 +100,22 @@ export function StockTransferDetailPage() {
         <Tooltip title={t("common.back", "Back")}>
           <IconButton
             onClick={() =>
-              navigate({ to: "/$lang/app/inventory/stock-transfers" })
+              navigate({ to: "/$lang/app/inventory/stock-adjustments" })
             }
           >
             <ArrowBack />
           </IconButton>
         </Tooltip>
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {t("inventory.stockTransfer", "Stock Transfer")} {transfer.reference}
+          {t("inventory.stockAdjustment", "Stock Adjustment")}
         </Typography>
-        <Chip label={transfer.status} color={getStatusColor(transfer.status)} />
+        <Chip
+          label={adjustment.status}
+          color={getStatusColor(adjustment.status)}
+        />
       </Stack>
 
-      {/* Transfer Details */}
+      {/* Adjustment Details */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2 }}>
@@ -144,47 +127,54 @@ export function StockTransferDetailPage() {
                 {t("inventory.product", "Product")}
               </Typography>
               <Typography variant="body1">
-                {transfer.product?.name || "N/A"}
+                {adjustment.product?.name || "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="body2" color="text.secondary">
-                {t("inventory.quantity", "Quantity")}
+                {t("inventory.location", "Location")}
               </Typography>
               <Typography variant="body1">
+                {adjustment.location?.name || "N/A"}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body2" color="text.secondary">
+                {t("inventory.quantity", "Quantity Adjustment")}
+              </Typography>
+              <Typography
+                variant="body1"
+                color={
+                  parseFloat(
+                    (adjustment.quantity as unknown as number).toString(),
+                  ) > 0
+                    ? "success.main"
+                    : "error.main"
+                }
+              >
                 {parseFloat(
-                  (transfer.quantity as unknown as number).toString(),
+                  (adjustment.quantity as unknown as number).toString(),
                 ).toFixed(2)}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" color="text.secondary">
-                {t("inventory.fromLocation", "From Location")}
-              </Typography>
-              <Typography variant="body1">
-                {transfer.fromLocation?.name || "N/A"}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" color="text.secondary">
-                {t("inventory.toLocation", "To Location")}
-              </Typography>
-              <Typography variant="body1">
-                {transfer.toLocation?.name || "N/A"}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="body2" color="text.secondary">
                 {t("common.status", "Status")}
               </Typography>
-              <Typography variant="body1">{transfer.status}</Typography>
+              <Typography variant="body1">{adjustment.status}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body2" color="text.secondary">
+                {t("inventory.reason", "Reason")}
+              </Typography>
+              <Typography variant="body1">{adjustment.reason}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="body2" color="text.secondary">
                 {t("common.createdAt", "Created At")}
               </Typography>
               <Typography variant="body1">
-                {new Date(transfer.createdAt).toLocaleDateString()}
+                {new Date(adjustment.createdAt).toLocaleDateString()}
               </Typography>
             </Grid>
           </Grid>
@@ -193,29 +183,15 @@ export function StockTransferDetailPage() {
 
       {/* Actions */}
       <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-        {canComplete && (
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<CheckCircle />}
-            onClick={handleCompleteTransfer}
-            disabled={actionLoading || completeTransfer.isPending}
-          >
-            {completeTransfer.isPending
-              ? t("common.loading", "Loading...")
-              : t("common.complete", "Complete")}
-          </Button>
-        )}
-
         {canCancel && (
           <Button
             variant="outlined"
             color="error"
             startIcon={<CancelIcon />}
-            onClick={handleCancelTransfer}
-            disabled={actionLoading || cancelTransfer.isPending}
+            onClick={handleCancelAdjustment}
+            disabled={actionLoading || cancelAdjustment.isPending}
           >
-            {cancelTransfer.isPending
+            {cancelAdjustment.isPending
               ? t("common.loading", "Loading...")
               : t("common.cancel", "Cancel")}
           </Button>
@@ -225,7 +201,7 @@ export function StockTransferDetailPage() {
           variant="outlined"
           color="secondary"
           onClick={() =>
-            navigate({ to: "/$lang/app/inventory/stock-transfers" })
+            navigate({ to: "/$lang/app/inventory/stock-adjustments" })
           }
         >
           {t("common.back", "Back")}
@@ -233,11 +209,9 @@ export function StockTransferDetailPage() {
       </Stack>
 
       {/* Error Messages */}
-      {(completeTransfer.error || cancelTransfer.error) && (
+      {cancelAdjustment.error && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {completeTransfer.error
-            ? (completeTransfer.error as Error).message
-            : (cancelTransfer.error as Error).message}
+          {(cancelAdjustment.error as Error).message}
         </Alert>
       )}
     </Container>

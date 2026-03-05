@@ -43,6 +43,8 @@
     "tenant": "Tenant",
     "hrms": "HRMS",
     "employees": "Employees",
+    "i18n": "Translations",
+    "compliance": "Compliance",
     "contracts": "Contracts",
     "reports": "Reports"
   },

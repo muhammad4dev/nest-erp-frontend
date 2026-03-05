@@ -1,4 +1,10 @@
-import { Category, Inventory, Label, Warehouse } from "@mui/icons-material";
+import {
+  Category,
+  Inventory,
+  Label,
+  Warehouse,
+  Translate,
+} from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -41,6 +47,13 @@ export function ProductsIndexPage() {
       icon: <Warehouse fontSize="large" />,
       path: "/$lang/app/products/stock" as const,
       color: "#9c27b0",
+    },
+    {
+      title: "Product Translations",
+      description: "Manage product translations in multiple languages",
+      icon: <Translate fontSize="large" />,
+      path: "/$lang/app/i18n/product-translations" as const,
+      color: "#0288d1",
     },
   ];
 

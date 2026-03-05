@@ -34,7 +34,7 @@ export const useCompleteStockTransfer = () => {
   return useMutation({
     mutationFn: (id: string) =>
       apiClient.post<StockTransfer>(
-        `/inventory/stock/transfers/${id}/complete`
+        `/inventory/stock/transfers/${id}/complete`,
       ),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({
@@ -52,9 +52,7 @@ export const useCancelStockTransfer = () => {
 
   return useMutation({
     mutationFn: (id: string) =>
-      apiClient.post<StockTransfer>(
-        `/inventory/stock/transfers/${id}/cancel`
-      ),
+      apiClient.post<StockTransfer>(`/inventory/stock/transfers/${id}/cancel`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({
         queryKey: stockTransfersQueryKeys.all,

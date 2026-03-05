@@ -33,7 +33,8 @@ export const useStockAdjustments = (filters?: {
 export const useStockAdjustment = (id?: string) => {
   return useQuery({
     queryKey: stockAdjustmentsQueryKeys.detail(id || ""),
-    queryFn: () => apiClient.get<StockAdjustment>(`/inventory/stock/adjustments/${id}`),
+    queryFn: () =>
+      apiClient.get<StockAdjustment>(`/inventory/stock/adjustments/${id}`),
     enabled: !!id,
   });
 };

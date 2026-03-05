@@ -959,7 +959,11 @@ export interface UpdateStockIssueDto {
 
 // ========== STOCK TRANSFERS ==========
 
-export type TransferStatus = "DRAFT" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+export type TransferStatus =
+  | "DRAFT"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CANCELLED";
 
 export interface StockTransfer extends BaseEntity {
   reference?: string;
@@ -1228,4 +1232,36 @@ export interface UpdateContractDto {
   endDate?: string;
   wage?: number;
   jobPosition?: string;
+}
+
+export interface ProductTranslation extends BaseEntity {
+  productId: string;
+  product?: Product;
+  locale: string;
+  name: string;
+  description?: string;
+}
+
+export interface EInvoice extends BaseEntity {
+  invoiceId: string;
+  invoice?: Invoice;
+  externalId?: string;
+  status: "DRAFT" | "SUBMITTED" | "ACCEPTED" | "REJECTED" | "CANCELLED";
+  submittedAt?: string;
+  acceptedAt?: string;
+  rejectionReason?: string;
+  xmlData?: string;
+  pdfUrl?: string;
+  notes?: string;
+}
+
+export interface CreateEInvoiceDto {
+  invoiceId: string;
+  externalId?: string;
+  notes?: string;
+}
+
+export interface UpdateEInvoiceDto {
+  status?: string;
+  notes?: string;
 }

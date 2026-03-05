@@ -9,6 +9,9 @@ import { salesRoutes } from "@/features/sales/salesRoutes";
 import { tenantsRoutes } from "@/features/tenants/tenantsRoutes";
 import { usersRoutes } from "@/features/users/usersRoutes";
 import { hrmsRoutes } from "@/features/hrms/hrmsRoutes";
+import { financeConfigRoutes } from "@/features/finance-config/financeConfigRoutes";
+import { i18nRoutes } from "@/features/i18n/i18nRoutes";
+import { complianceRoutes } from "@/features/compliance/complianceRoutes";
 
 export const appRoutes = [
   ...usersRoutes,
@@ -16,10 +19,13 @@ export const appRoutes = [
   ...tenantsRoutes,
   ...hrmsRoutes,
   ...financeRoutes,
+  ...financeConfigRoutes,
   ...productsRoutes,
   ...inventoryRoutes,
   ...partnersRoutes,
   ...procurementRoutes,
   ...salesRoutes,
   ...posRoutes,
+  ...i18nRoutes,
+  ...complianceRoutes,
 ] as const;

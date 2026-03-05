@@ -33,7 +33,8 @@ export const useStockTransfers = (filters?: {
 export const useStockTransfer = (id?: string) => {
   return useQuery({
     queryKey: stockTransfersQueryKeys.detail(id || ""),
-    queryFn: () => apiClient.get<StockTransfer>(`/inventory/stock/transfers/${id}`),
+    queryFn: () =>
+      apiClient.get<StockTransfer>(`/inventory/stock/transfers/${id}`),
     enabled: !!id,
   });
 };

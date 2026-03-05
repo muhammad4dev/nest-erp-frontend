@@ -94,6 +94,32 @@ const stockTransferDetailRoute = createRoute({
     RouteGuard({ permissions: ["read:stock"] }, params),
 });
 
+// Stock Adjustments List Route
+const stockAdjustmentsRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: "inventory/stock-adjustments",
+  component: lazyRouteComponent(() =>
+    import("./pages/StockAdjustmentsPage").then((m) => ({
+      default: m.StockAdjustmentsPage,
+    })),
+  ),
+  beforeLoad: async ({ params }) =>
+    RouteGuard({ permissions: ["read:stock"] }, params),
+});
+
+// Stock Adjustment Detail Route
+const stockAdjustmentDetailRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: "inventory/stock-adjustments/$adjustmentId",
+  component: lazyRouteComponent(() =>
+    import("./pages/StockAdjustmentDetailPage").then((m) => ({
+      default: m.StockAdjustmentDetailPage,
+    })),
+  ),
+  beforeLoad: async ({ params }) =>
+    RouteGuard({ permissions: ["read:stock"] }, params),
+});
+
 /**
  * Export all inventory routes as an array
  */
@@ -105,4 +131,6 @@ export const inventoryRoutes = [
   stockIssueDetailRoute,
   stockTransfersRoute,
   stockTransferDetailRoute,
+  stockAdjustmentsRoute,
+  stockAdjustmentDetailRoute,
 ];

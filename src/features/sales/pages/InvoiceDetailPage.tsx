@@ -62,39 +62,56 @@ export function InvoiceDetailPage() {
   // Calculate totals
   const subtotal = (invoice.lines || []).reduce(
     (sum, line) => sum + parseFloat(line.subtotal as any),
-    0
+    0,
   );
   const totalDiscount = (invoice.lines || []).reduce(
     (sum, line) => sum + parseFloat(line.discountAmount as any),
-    0
+    0,
   );
   const totalTax = (invoice.lines || []).reduce(
-    (sum, line) => sum + parseFloat(line.taxAmount as any || 0),
-    0
+    (sum, line) => sum + parseFloat((line.taxAmount as any) || 0),
+    0,
   );
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h4">Invoice: {invoice.number}</Typography>
         <InvoiceStatusBadge status={invoice.status} />
       </Box>
 
       {/* Invoice Summary */}
       <Paper sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 2,
+          }}
+        >
           <div>
             <Typography variant="body2" color="textSecondary">
               Customer
             </Typography>
-            <Typography variant="body1">{invoice.partner?.name || "N/A"}</Typography>
+            <Typography variant="body1">
+              {invoice.partner?.name || "N/A"}
+            </Typography>
           </div>
           <div>
             <Typography variant="body2" color="textSecondary">
               Invoice Date
             </Typography>
             <Typography variant="body1">
-              {new Date(invoice.invoiceDate || invoice.createdAt).toLocaleDateString()}
+              {new Date(
+                invoice.invoiceDate || invoice.createdAt,
+              ).toLocaleDateString()}
             </Typography>
           </div>
           {invoice.dueDate && (
@@ -136,7 +153,9 @@ export function InvoiceDetailPage() {
               {invoice.lines && invoice.lines.length > 0 ? (
                 invoice.lines.map((line, idx) => (
                   <TableRow key={idx}>
-                    <TableCell>{line.description || line.product?.name || "N/A"}</TableCell>
+                    <TableCell>
+                      {line.description || line.product?.name || "N/A"}
+                    </TableCell>
                     <TableCell align="right">{line.quantity}</TableCell>
                     <TableCell align="right">
                       ${parseFloat(line.unitPrice as any).toFixed(2)}
@@ -163,20 +182,30 @@ export function InvoiceDetailPage() {
 
       {/* Totals */}
       <Paper sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", minWidth: 300 }}>
+        <Box
+          sx={{ display: "flex", justifyContent: "flex-end", minWidth: 300 }}
+        >
           <Box sx={{ width: 300 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+            >
               <Typography>Subtotal:</Typography>
               <Typography>${subtotal.toFixed(2)}</Typography>
             </Box>
             {totalDiscount > 0 && (
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+              >
                 <Typography>Discount:</Typography>
-                <Typography color="error">${totalDiscount.toFixed(2)}</Typography>
+                <Typography color="error">
+                  ${totalDiscount.toFixed(2)}
+                </Typography>
               </Box>
             )}
             {totalTax > 0 && (
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+              >
                 <Typography>Tax:</Typography>
                 <Typography>${totalTax.toFixed(2)}</Typography>
               </Box>

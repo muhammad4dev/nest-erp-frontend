@@ -105,7 +105,14 @@ export function SalesOrderDetailPage() {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h4">Sales Order: {order.orderNumber}</Typography>
         <SalesOrderStatusBadge status={order.status} />
       </Box>
@@ -115,12 +122,20 @@ export function SalesOrderDetailPage() {
         <Typography variant="h6" gutterBottom>
           Order Information
         </Typography>
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 2,
+          }}
+        >
           <div>
             <Typography variant="body2" color="textSecondary">
               Customer
             </Typography>
-            <Typography variant="body1">{order.partner?.name || "N/A"}</Typography>
+            <Typography variant="body1">
+              {order.partner?.name || "N/A"}
+            </Typography>
           </div>
           <div>
             <Typography variant="body2" color="textSecondary">
@@ -199,7 +214,11 @@ export function SalesOrderDetailPage() {
             onClick={handleSend}
             disabled={actionInProgress !== null}
           >
-            {actionInProgress === "send" ? <CircularProgress size={24} /> : "Send Quote"}
+            {actionInProgress === "send" ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Send Quote"
+            )}
           </Button>
         )}
 
@@ -210,7 +229,11 @@ export function SalesOrderDetailPage() {
             onClick={handleConfirm}
             disabled={actionInProgress !== null}
           >
-            {actionInProgress === "confirm" ? <CircularProgress size={24} /> : "Confirm Order"}
+            {actionInProgress === "confirm" ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Confirm Order"
+            )}
           </Button>
         )}
 
@@ -221,7 +244,11 @@ export function SalesOrderDetailPage() {
             onClick={handleCreateInvoice}
             disabled={actionInProgress !== null}
           >
-            {actionInProgress === "invoice" ? <CircularProgress size={24} /> : "Create Invoice"}
+            {actionInProgress === "invoice" ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Create Invoice"
+            )}
           </Button>
         )}
 
@@ -232,7 +259,11 @@ export function SalesOrderDetailPage() {
             onClick={handleCancel}
             disabled={actionInProgress !== null}
           >
-            {actionInProgress === "cancel" ? <CircularProgress size={24} /> : "Cancel Order"}
+            {actionInProgress === "cancel" ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Cancel Order"
+            )}
           </Button>
         )}
 
@@ -246,9 +277,17 @@ export function SalesOrderDetailPage() {
       </Stack>
 
       {/* Error Messages */}
-      {(confirmMutation.error || sendMutation.error || cancelMutation.error || createInvoiceMutation.error) && (
+      {(confirmMutation.error ||
+        sendMutation.error ||
+        cancelMutation.error ||
+        createInvoiceMutation.error) && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {(confirmMutation.error || sendMutation.error || cancelMutation.error || createInvoiceMutation.error) as any}
+          {
+            (confirmMutation.error ||
+              sendMutation.error ||
+              cancelMutation.error ||
+              createInvoiceMutation.error) as any
+          }
         </Alert>
       )}
     </Container>

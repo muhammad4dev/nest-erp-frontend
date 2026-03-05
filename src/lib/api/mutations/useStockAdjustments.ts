@@ -33,7 +33,7 @@ export const useCancelStockAdjustment = () => {
   return useMutation({
     mutationFn: (id: string) =>
       apiClient.post<StockAdjustment>(
-        `/inventory/stock/adjustments/${id}/cancel`
+        `/inventory/stock/adjustments/${id}/cancel`,
       ),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({

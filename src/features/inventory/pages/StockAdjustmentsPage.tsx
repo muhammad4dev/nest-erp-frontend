@@ -1,10 +1,9 @@
-import { Add, Delete, CheckCircle, Cancel } from "@mui/icons-material";
+import { Add, Delete, Cancel } from "@mui/icons-material";
 import {
   Box,
   Button,
   Chip,
   Container,
-  IconButton,
   Paper,
   TextField,
   Tooltip,
@@ -26,48 +25,37 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  useCompleteStockTransfer,
-  useCancelStockTransfer,
-  useCreateStockTransfer,
-} from "@/lib/api/mutations/useStockTransfers";
-import { useProducts, useStockLocations } from "@/lib/api/queries/useProducts";
-import { useStockTransfers } from "@/lib/api/queries/useStockTransfers";
+  useCancelStockAdjustment,
+  useCreateStockAdjustment,
+} from "@/lib/api/mutations/useStockAdjustments";
+import { useProducts } from "@/lib/api/queries/useProducts";
+import { useStockAdjustments } from "@/lib/api/queries/useStockAdjustments";
 import { useAppNavigate } from "@/shared/hooks/useAppNavigate";
-import type { StockTransfer } from "@/types/api.types";
+import type { StockAdjustment } from "@/types/api.types";
 
-export function StockTransfersPage() {
+export function StockAdjustmentsPage() {
   const { t } = useTranslation();
   const navigate = useAppNavigate();
-  const { data: transfers, isLoading } = useStockTransfers();
-  const { data: locations = [] } = useStockLocations();
+  const { data: adjustments, isLoading } = useStockAdjustments();
   const { data: products = [] } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     productId: "",
-    fromLocationId: "",
-    toLocationId: "",
+    locationId: "",
     quantity: 0,
-    reference: "",
+    reason: "",
   });
   const [formError, setFormError] = useState<string | null>(null);
 
-  const createTransfer = useCreateStockTransfer();
-  const completeTransfer = useCompleteStockTransfer();
-  const cancelTransfer = useCancelStockTransfer();
+  const createAdjustment = useCreateStockAdjustment();
+  const cancelAdjustment = useCancelStockAdjustment();
 
-  const filteredTransfers = transfers?.filter(
-    (transfer) =>
-      transfer.reference?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transfer.product?.name
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      transfer.fromLocation?.name
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      transfer.toLocation?.name
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()),
+  const filteredAdjustments = adjustments?.filter(
+    (adj) =>
+      adj.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      adj.location?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      adj.reason?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getStatusColor = (
@@ -78,19 +66,18 @@ export function StockTransfersPage() {
         DRAFT: "default",
         COMPLETED: "success",
         CANCELLED: "error",
-        IN_PROGRESS: "warning",
       };
     return colors[status] || "default";
   };
 
-  const handleCreateTransfer = async () => {
+  const handleCreateAdjustment = async () => {
     setFormError(null);
 
     if (
       !formData.productId ||
-      !formData.fromLocationId ||
-      !formData.toLocationId ||
-      formData.quantity <= 0
+      !formData.locationId ||
+      formData.quantity === 0 ||
+      !formData.reason
     ) {
       setFormError(
         t("validation.required", "All required fields must be filled"),
@@ -98,52 +85,37 @@ export function StockTransfersPage() {
       return;
     }
 
-    if (formData.fromLocationId === formData.toLocationId) {
-      setFormError(
-        t("inventory.sameLocation", "From and to locations must be different"),
-      );
-      return;
-    }
-
     try {
-      await createTransfer.mutateAsync({
+      await createAdjustment.mutateAsync({
         productId: formData.productId,
-        fromLocationId: formData.fromLocationId,
-        toLocationId: formData.toLocationId,
+        locationId: formData.locationId,
         quantity: formData.quantity,
-        reference: formData.reference || undefined,
+        reason: formData.reason,
       });
 
       setFormDialogOpen(false);
       setFormData({
         productId: "",
-        fromLocationId: "",
-        toLocationId: "",
+        locationId: "",
         quantity: 0,
-        reference: "",
+        reason: "",
       });
     } catch (error) {
       setFormError(
-        error instanceof Error ? error.message : "Failed to create transfer",
+        error instanceof Error ? error.message : "Failed to create adjustment",
       );
     }
   };
 
-  const handleCompleteTransfer = async (id: string) => {
+  const handleCancelAdjustment = async (id: string) => {
     if (
-      window.confirm(t("confirm.completeTransfer", "Complete this transfer?"))
+      window.confirm(t("confirm.cancelAdjustment", "Cancel this adjustment?"))
     ) {
-      await completeTransfer.mutateAsync(id);
+      await cancelAdjustment.mutateAsync(id);
     }
   };
 
-  const handleCancelTransfer = async (id: string) => {
-    if (window.confirm(t("confirm.cancelTransfer", "Cancel this transfer?"))) {
-      await cancelTransfer.mutateAsync(id);
-    }
-  };
-
-  const columns: GridColDef<StockTransfer>[] = [
+  const columns: GridColDef<StockAdjustment>[] = [
     {
       field: "reference",
       headerName: t("inventory.reference", "Reference"),
@@ -158,18 +130,11 @@ export function StockTransfersPage() {
       renderCell: (params) => params.row.product?.name || "N/A",
     },
     {
-      field: "fromLocation",
-      headerName: t("inventory.fromLocation", "From Location"),
+      field: "location",
+      headerName: t("inventory.location", "Location"),
       flex: 1,
       minWidth: 150,
-      renderCell: (params) => params.row.fromLocation?.name || "N/A",
-    },
-    {
-      field: "toLocation",
-      headerName: t("inventory.toLocation", "To Location"),
-      flex: 1,
-      minWidth: 150,
-      renderCell: (params) => params.row.toLocation?.name || "N/A",
+      renderCell: (params) => params.row.location?.name || "N/A",
     },
     {
       field: "quantity",
@@ -183,6 +148,12 @@ export function StockTransfersPage() {
         parseFloat(
           (params.row.quantity as unknown as number).toString(),
         ).toFixed(2),
+    },
+    {
+      field: "reason",
+      headerName: t("inventory.reason", "Reason"),
+      flex: 1,
+      minWidth: 150,
     },
     {
       field: "status",
@@ -204,24 +175,11 @@ export function StockTransfersPage() {
       flex: 0.8,
       minWidth: 100,
       getActions: (params) => {
-        const canComplete = params.row.status === "DRAFT";
         const canCancel =
           params.row.status !== "COMPLETED" &&
           params.row.status !== "CANCELLED";
 
         const actions = [];
-
-        if (canComplete) {
-          actions.push(
-            <GridActionsCellItem
-              key="complete"
-              icon={<CheckCircle />}
-              label="Complete"
-              onClick={() => handleCompleteTransfer(params.row.id)}
-              showInMenu
-            />,
-          );
-        }
 
         if (canCancel) {
           actions.push(
@@ -229,7 +187,7 @@ export function StockTransfersPage() {
               key="cancel"
               icon={<Cancel />}
               label="Cancel"
-              onClick={() => handleCancelTransfer(params.row.id)}
+              onClick={() => handleCancelAdjustment(params.row.id)}
               color="error"
               showInMenu
             />,
@@ -252,7 +210,7 @@ export function StockTransfersPage() {
         }}
       >
         <Typography variant="h4">
-          {t("inventory.stockTransfers", "Stock Transfers")}
+          {t("inventory.stockAdjustments", "Stock Adjustments")}
         </Typography>
         <Button
           variant="contained"
@@ -275,7 +233,7 @@ export function StockTransfersPage() {
 
       <Paper>
         <DataGrid
-          rows={filteredTransfers || []}
+          rows={filteredAdjustments || []}
           columns={columns}
           loading={isLoading}
           disableSelectionOnClick
@@ -285,15 +243,15 @@ export function StockTransfersPage() {
           }}
           onRowClick={(params) =>
             navigate({
-              to: "/$lang/app/inventory/stock-transfers/$transferId",
-              params: { transferId: params.row.id },
+              to: "/$lang/app/inventory/stock-adjustments/$adjustmentId",
+              params: { adjustmentId: params.row.id },
             })
           }
           sx={{ cursor: "pointer" }}
         />
       </Paper>
 
-      {/* Create Transfer Dialog */}
+      {/* Create Adjustment Dialog */}
       <Dialog
         open={formDialogOpen}
         onClose={() => {
@@ -304,7 +262,7 @@ export function StockTransfersPage() {
         fullWidth
       >
         <DialogTitle>
-          {t("inventory.createTransfer", "Create Stock Transfer")}
+          {t("inventory.createAdjustment", "Create Stock Adjustment")}
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 2 }}>
@@ -331,46 +289,6 @@ export function StockTransfersPage() {
             </TextField>
 
             <TextField
-              select
-              label={t("inventory.fromLocation", "From Location")}
-              value={formData.fromLocationId}
-              onChange={(e) =>
-                setFormData({ ...formData, fromLocationId: e.target.value })
-              }
-              SelectProps={{
-                native: true,
-              }}
-              fullWidth
-            >
-              <option value="">Select Location</option>
-              {locations.map((location) => (
-                <option key={location.id} value={location.id}>
-                  {location.name}
-                </option>
-              ))}
-            </TextField>
-
-            <TextField
-              select
-              label={t("inventory.toLocation", "To Location")}
-              value={formData.toLocationId}
-              onChange={(e) =>
-                setFormData({ ...formData, toLocationId: e.target.value })
-              }
-              SelectProps={{
-                native: true,
-              }}
-              fullWidth
-            >
-              <option value="">Select Location</option>
-              {locations.map((location) => (
-                <option key={location.id} value={location.id}>
-                  {location.name}
-                </option>
-              ))}
-            </TextField>
-
-            <TextField
               type="number"
               label={t("inventory.quantity", "Quantity")}
               value={formData.quantity}
@@ -380,17 +298,21 @@ export function StockTransfersPage() {
                   quantity: parseFloat(e.target.value) || 0,
                 })
               }
-              inputProps={{ step: "0.01", min: "0" }}
+              inputProps={{ step: "0.01" }}
               fullWidth
+              helperText="Positive value to add, negative to reduce"
             />
 
             <TextField
-              label={t("inventory.reference", "Reference")}
-              value={formData.reference}
+              label={t("inventory.reason", "Reason")}
+              value={formData.reason}
               onChange={(e) =>
-                setFormData({ ...formData, reference: e.target.value })
+                setFormData({ ...formData, reason: e.target.value })
               }
+              multiline
+              rows={3}
               fullWidth
+              placeholder="e.g., Physical count adjustment, Damage, etc."
             />
           </Stack>
         </DialogContent>
@@ -399,11 +321,11 @@ export function StockTransfersPage() {
             {t("common.cancel", "Cancel")}
           </Button>
           <Button
-            onClick={handleCreateTransfer}
+            onClick={handleCreateAdjustment}
             variant="contained"
-            disabled={createTransfer.isPending}
+            disabled={createAdjustment.isPending}
           >
-            {createTransfer.isPending ? (
+            {createAdjustment.isPending ? (
               <CircularProgress size={24} />
             ) : (
               t("common.create", "Create")
